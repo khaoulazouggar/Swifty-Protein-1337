@@ -17,9 +17,17 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="List"
+            name="Ligands"
             component={List}
-            options={{ headerShown: true }}
+            options={{
+              headerStyle: {
+                backgroundColor: "#9CB9D8",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+            }}
           />
         </Stack.Group>
       </Stack.Navigator>

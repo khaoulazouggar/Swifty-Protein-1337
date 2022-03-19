@@ -40,8 +40,8 @@ export default function Home() {
     });
     if (!biometricAuth.success)
       // alert("Your login Failed, Please try again", "OK");
-      navigation.navigate("List");
-    else navigation.navigate("List");
+      navigation.navigate("Ligands");
+    else navigation.navigate("Ligands");
   };
 
   const colorScheme = useColorScheme();
@@ -50,10 +50,10 @@ export default function Home() {
       style={colorScheme === "light" ? styles.container : dark_styles.container}
     >
       {/*this is the background animation */}
-      <LoopAnimation
+      {/* <LoopAnimation
         source={require("../assets/biology.png")}
         duration={10000}
-      />
+      /> */}
       <View style={styles.bgImage}>
         {/*Content goes here*/}
         <Pressable style={styles.button} onPress={handleBiometricAuth}>
