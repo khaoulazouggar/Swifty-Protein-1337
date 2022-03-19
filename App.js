@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./Components/Home";
 import List from "./Components/List";
+import Render from "./Components/Render";
 
 const Stack = createNativeStackNavigator();
 
@@ -11,7 +12,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Group>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Home"
             component={Home}
             options={{ headerShown: false }}
@@ -20,6 +21,11 @@ export default function App() {
             name="List"
             component={List}
             options={{ headerShown: true }}
+          /> */}
+          <Stack.Screen
+            name="Render"
+            component={Render}
+            options={{ headerShown: false }}
           />
         </Stack.Group>
       </Stack.Navigator>

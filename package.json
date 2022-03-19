@@ -14,8 +14,11 @@
     "@react-navigation/native-stack": "^6.5.0",
     "expo": "~44.0.0",
     "expo-cli": "^5.2.0",
+    "expo-gl": "^11.1.2",
     "expo-local-authentication": "^12.1.1",
     "expo-status-bar": "~1.2.0",
+    "expo-three": "^6.1.0",
+    "prettier": "^2.6.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
@@ -23,7 +26,8 @@
     "react-native-LoopAnimation": "^0.1.0",
     "react-native-splash-screen": "^3.3.0",
     "react-native-web": "0.17.1",
-    "react-router": "^6.2.2"
+    "react-router": "^6.2.2",
+    "three": "^0.138.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
