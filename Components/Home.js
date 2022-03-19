@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   ImageBackground,
@@ -8,9 +8,42 @@ import {
 } from "react-native";
 import LoopAnimation from "react-native-LoopAnimation";
 import { Appearance, useColorScheme } from "react-native-appearance";
+import * as LocalAuthentication from "expo-local-authentication";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
+  const navigation = useNavigation();
   Appearance.getColorScheme();
+  const [isSupported, setisSupported] = useState(false);
+  //Check if TouchID or FaceID is supported by the app
+  useEffect(async () => {
+    const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
+    if (!savedBiometrics)
+      return alert(
+        "Biometric record not found",
+        "Please verify your identity with your password",
+        "OK",
+        () => fallBackToDefaultAuth()
+      );
+    const compatible = LocalAuthentication.hasHardwareAsync();
+    if (compatible) {
+      setisSupported(compatible);
+    }
+  }, []);
+
+  //handle login with biometricAuth
+  const handleBiometricAuth = async () => {
+    const biometricAuth = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Login with your TouchId/FaceId",
+      disableDeviceFallback: true,
+      cancelLabel: "Cancel",
+    });
+    if (!biometricAuth.success)
+      // alert("Your login Failed, Please try again", "OK");
+      navigation.navigate("List");
+    else navigation.navigate("List");
+  };
+
   const colorScheme = useColorScheme();
   return (
     <View
@@ -23,7 +56,7 @@ export default function Home() {
       />
       <View style={styles.bgImage}>
         {/*Content goes here*/}
-        <Pressable style={styles.button}>
+        <Pressable style={styles.button} onPress={handleBiometricAuth}>
           <Text style={styles.text}>LOGIN</Text>
         </Pressable>
       </View>
