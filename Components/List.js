@@ -11,12 +11,14 @@ import { Searchbar } from "react-native-paper";
 import data from "./ligands.json";
 import { useNavigation } from "@react-navigation/native";
 import Axios from "axios";
+import { Appearance, useColorScheme } from "react-native-appearance";
 
 export default function List() {
   const [searchQuery, setSearchQuery] = useState("");
   const [listData, setdata] = React.useState(data);
   const navigation = useNavigation();
-
+  Appearance.getColorScheme();
+  const colorScheme = useColorScheme();
   //get Ligand
   const getLigand = (item) => {
     Axios(`https://files.rcsb.org/ligands/view/${item}_model.pdb`)
@@ -25,7 +27,7 @@ export default function List() {
         // navigation.navigate("Protein", {
         //   data: parsed,
         // });
-        console.log(res);
+        console.log(res.data);
       })
       .catch((er) => console.log("e", er));
   };
@@ -41,20 +43,27 @@ export default function List() {
 
   // renderItem
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <Pressable onPress={() => getLigand(item)}>
-        <Text style={styles.text}>{item}</Text>
+    <View style={colorScheme === "light" ? styles.item : dark_styles.item}>
+      <Pressable
+        style={colorScheme === "light" ? styles.press : dark_styles.press}
+        onPress={() => getLigand(item)}
+      >
+        <Text style={colorScheme === "light" ? styles.text : dark_styles.text}>
+          {item}
+        </Text>
       </Pressable>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={colorScheme === "light" ? styles.container : dark_styles.container}
+    >
       <Searchbar
         placeholder="Search"
         value={searchQuery}
         onChangeText={onHandleChange}
-        style={styles.search}
+        style={colorScheme === "light" ? styles.search : dark_styles.search}
       />
       <FlatList
         style={styles.list}
@@ -87,13 +96,63 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     borderRadius: 10,
   },
-  text: {
-    // color: "#fff",
-    textAlign: "center",
+  press: {
     backgroundColor: "#ffff",
     margin: 5,
     padding: 10,
     fontSize: 15,
+    width: "80%",
+    alignSelf: "center",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#9CB9D8",
+  },
+  text: {
+    textAlign: "center",
+    fontWeight: "700",
+  },
+  list: {
+    width: "100%",
+  },
+});
+
+const dark_styles = StyleSheet.create({
+  container: {
+    backgroundColor: "black",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  search: {
+    margin: 20,
+    width: "90%",
+    // backgroundColor: "#e6f5ff",
+  },
+  item: {
+    shadowColor: "#9CB9D8",
+    shadowOffset: {
+      width: 2,
+      height: 2,
+    },
+    // shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    borderRadius: 10,
+  },
+  press: {
+    backgroundColor: "#9CB9D8",
+    margin: 5,
+    padding: 10,
+    fontSize: 15,
+    width: "80%",
+    alignSelf: "center",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#485A78",
+  },
+  text: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "800",
   },
   list: {
     width: "100%",

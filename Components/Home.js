@@ -15,6 +15,8 @@ export default function Home() {
   const navigation = useNavigation();
   Appearance.getColorScheme();
   const [isSupported, setisSupported] = useState(false);
+  const colorScheme = useColorScheme();
+
   //Check if TouchID or FaceID is supported by the app
   useEffect(async () => {
     const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
@@ -44,7 +46,6 @@ export default function Home() {
     else navigation.navigate("Ligands");
   };
 
-  const colorScheme = useColorScheme();
   return (
     <View
       style={colorScheme === "light" ? styles.container : dark_styles.container}
@@ -63,9 +64,9 @@ export default function Home() {
     </View>
     // <ImageBackground
     //   source={require("../assets/biology.png")}
-    //   style={theme == "light" ? styles.bgImage : dark_styles.bgImage}
+    //   style={colorScheme == "light" ? styles.bgImage : dark_styles.bgImage}
     // >
-    //   <Pressable style={styles.button}>
+    //   <Pressable style={styles.button} onPress={handleBiometricAuth}>
     //     <Text style={styles.text}>LOGIN</Text>
     //   </Pressable>
     // </ImageBackground>
@@ -75,6 +76,8 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   bgImage: {
