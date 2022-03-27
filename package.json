@@ -18,6 +18,7 @@
     "expo-local-authentication": "^12.1.1",
     "expo-status-bar": "~1.2.0",
     "expo-three": "^6.1.0",
+    "expo-three-orbit-controls": "^2.0.0",
     "prettier": "^2.6.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
