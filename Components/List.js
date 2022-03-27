@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -6,6 +6,8 @@ import {
   Pressable,
   View,
   Text,
+  ActivityIndicator,
+  AppState,
 } from "react-native";
 import { Searchbar } from "react-native-paper";
 import data from "./ligands.json";
@@ -15,12 +17,29 @@ import { Appearance, useColorScheme } from "react-native-appearance";
 
 export default function List() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [listData, setdata] = React.useState(data);
+  const [listData, setdata] = useState(data);
+  const [load, setLoad] = useState(false);
+  const appState = useRef(AppState.currentState);
   const navigation = useNavigation();
-  Appearance.getColorScheme();
   const colorScheme = useColorScheme();
+  Appearance.getColorScheme();
+
+  // Home Screen always be displayed when relaunching the app
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        navigation.navigate("Home");
+      }
+      appState.current = nextAppState;
+    });
+  }, []);
+
   //get Ligand
   const getLigand = (item) => {
+    setLoad(true);
     Axios(`https://files.rcsb.org/ligands/view/${item}_model.pdb`)
       .then((res) => {
         // const parsed = useParse(res.data);
@@ -28,8 +47,11 @@ export default function List() {
         //   data: parsed,
         // });
         console.log(res.data);
+        setLoad(false);
       })
-      .catch((er) => console.log("e", er));
+      .catch((er) =>
+        alert("Failed to load the ligand, Please try again", "OK")
+      );
   };
 
   // setSearchQuery
@@ -65,22 +87,25 @@ export default function List() {
         onChangeText={onHandleChange}
         style={colorScheme === "light" ? styles.search : dark_styles.search}
       />
-      <FlatList
-        style={styles.list}
-        data={listData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item}
-      />
+      {!load ? (
+        <FlatList
+          style={styles.list}
+          data={listData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item}
+        />
+      ) : (
+        <ActivityIndicator size="large" color="#9CB9D8" />
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "black",
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
   },
   search: {
     margin: 20,

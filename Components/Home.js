@@ -47,29 +47,32 @@ export default function Home() {
   };
 
   return (
-    <View
-      style={colorScheme === "light" ? styles.container : dark_styles.container}
+    // <View
+    //   style={colorScheme === "light" ? styles.container : dark_styles.container}
+    // >
+    //   {/*this is the background animation */}
+    //   <LoopAnimation
+    //     source={require("../assets/biology.png")}
+    //     duration={10000}
+    //   />
+    //   <View style={styles.bgImage}>
+    //     <Pressable style={styles.button} onPress={handleBiometricAuth}>
+    //       <Text style={styles.text}>LOGIN</Text>
+    //     </Pressable>
+    //   </View>
+    // </View>
+    <ImageBackground
+      source={require("../assets/biology.png")}
+      style={colorScheme == "light" ? styles.bgImage : dark_styles.bgImage}
     >
-      {/*this is the background animation */}
-      {/* <LoopAnimation
-        source={require("../assets/biology.png")}
-        duration={10000}
-      /> */}
-      <View style={styles.bgImage}>
-        {/*Content goes here*/}
+      {isSupported ? (
         <Pressable style={styles.button} onPress={handleBiometricAuth}>
           <Text style={styles.text}>LOGIN</Text>
         </Pressable>
-      </View>
-    </View>
-    // <ImageBackground
-    //   source={require("../assets/biology.png")}
-    //   style={colorScheme == "light" ? styles.bgImage : dark_styles.bgImage}
-    // >
-    //   <Pressable style={styles.button} onPress={handleBiometricAuth}>
-    //     <Text style={styles.text}>LOGIN</Text>
-    //   </Pressable>
-    // </ImageBackground>
+      ) : (
+        <View></View>
+      )}
+    </ImageBackground>
   );
 }
 

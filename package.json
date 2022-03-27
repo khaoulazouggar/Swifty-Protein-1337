@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "buildios": "expo build:ios -t simulator"
   },
   "dependencies": {
     "@react-navigation/native": "^6.0.8",
@@ -27,7 +28,8 @@
     "react-native-spinkit": "^1.5.1",
     "react-native-splash-screen": "^3.3.0",
     "react-native-web": "0.17.1",
-    "react-router": "^6.2.2"
+    "react-router": "^6.2.2",
+    "expo-updates": "~0.11.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
