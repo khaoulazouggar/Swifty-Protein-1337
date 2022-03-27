@@ -28,9 +28,9 @@ const Render = () => {
         // camera.position.z = 100;
         // camera.position.y = 0;
         // camera.position.x = 0;
-        camera.position.set(0, 0, i);
+        camera.position.set(0, 0, 100);
         camera.lookAt(new THREE.Vector3(0, 0, 0));
-        // setCamera(camera);
+        setCamera(camera);
         // 3. Renderer
         const renderer = new Renderer({ gl });
         renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -70,6 +70,7 @@ const Render = () => {
             sphere2.position.distanceTo(sphere1.position),
             64
         );
+        /********************************* */
         let axis = new THREE.Vector3(
             sphere1.position.x - sphere2.position.x,
             sphere1.position.y - sphere2.position.y,
@@ -86,6 +87,7 @@ const Render = () => {
         );
         const cylinderMesh = new THREE.Mesh(cylinder, materialCyl);
         scene.add(cylinderMesh);
+        /******************************** */
         // 5. Light
         // scene.add(cube);
         const light = new THREE.AmbientLight(0xffffff, 0.2); // soft white light
@@ -97,15 +99,20 @@ const Render = () => {
         scene.add(directionalLight);
         // 6. Draw
         function update() {
-            camera.position.set(0, 0, camera.position.z + 1);
+            if (camera.z > 150 || camera.z < 80) {
+                camera.position.set(0, 0, 100);
+                // setCamera
+            }
+            camera.lookAt(new THREE.Vector3(camera.x, camera.y, 0));
+            // camera.position.set(0, 0, camera.position.z + 1);
         }
         const animate = () => {
             timeout = requestAnimationFrame(animate);
-            update();
-            setI(i + 1);
-            if (camera.position.z == 150) {
-                camera.position.set(0, 0, i);
-            }
+            // update();
+            // setI(i + 1);
+            // if (camera.position.z == 150) {
+            //     camera.position.set(0, 0, i);
+            // }
             renderer.render(scene, camera);
             gl.endFrameEXP();
         };
@@ -125,6 +132,7 @@ const Render = () => {
     return (
         <OrbitControlsView
             camera={camera}
+            autoRotate={true}
             style={{ width: windowWidth, height: windowHeight }}
             // style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
