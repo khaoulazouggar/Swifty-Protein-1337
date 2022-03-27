@@ -17,7 +17,6 @@ const Render = () => {
     const onContextCreate = async (gl) => {
         // 1. Scene
         var scene = new THREE.Scene();
-        // orbit control
         // 2. Camera
         const camera = new THREE.PerspectiveCamera(
             75,
@@ -29,8 +28,8 @@ const Render = () => {
         // camera.position.y = 0;
         // camera.position.x = 0;
         camera.position.set(0, 0, 100);
-        camera.lookAt(new THREE.Vector3(0, 0, 0));
         setCamera(camera);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
         // 3. Renderer
         const renderer = new Renderer({ gl });
         renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -95,19 +94,12 @@ const Render = () => {
         scene.add(light);
 
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(0, 0, 5);
+        directionalLight.position.set(0, 0, 100);
         scene.add(directionalLight);
         // 6. Draw
-        function update() {
-            if (camera.z > 150 || camera.z < 80) {
-                camera.position.set(0, 0, 100);
-                // setCamera
-            }
-            camera.lookAt(new THREE.Vector3(camera.x, camera.y, 0));
-            // camera.position.set(0, 0, camera.position.z + 1);
-        }
         const animate = () => {
-            timeout = requestAnimationFrame(animate);
+            requestAnimationFrame(animate);
+            // timeout = requestAnimationFrame(animate);
             // update();
             // setI(i + 1);
             // if (camera.position.z == 150) {
@@ -121,31 +113,23 @@ const Render = () => {
     const windowWidth = Dimensions.get("window").width;
     const windowHeight = Dimensions.get("window").height;
     const [camera, setCamera] = useState(null);
-    const [test, settest] = useState("");
-    const [i, setI] = useState(50);
-    let timeout;
+    // let timeout;
 
-    useEffect(() => {
-        // Clear the animation loop when the component unmounts
-        return () => clearTimeout(timeout);
-    }, []);
+    // useEffect(() => {
+    //     // Clear the animation loop when the component unmounts
+    //     return () => clearTimeout(timeout);
+    // }, []);
     return (
         <OrbitControlsView
             camera={camera}
-            autoRotate={true}
-            style={{ width: windowWidth, height: windowHeight }}
+            style={{ flex: 1 }}
             // style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
             <GLView
                 style={{ flex: 1 }}
-                key="d"
                 // style={{ width: windowWidth, height: windowHeight }}
                 onContextCreate={onContextCreate}
             />
-            <Text>
-                {"asdfasdfasdf i ==="}
-                {i}
-            </Text>
         </OrbitControlsView>
     );
 };
