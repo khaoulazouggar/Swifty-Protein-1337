@@ -435,10 +435,10 @@ export class OrbitControls extends EventDispatcher {
                 if (dx * dx + dy * dy > 0) {
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     console.log("distanace", distance);
-                    console.log(
-                        "distanace so9ak",
-                        this.dollyEnd.y / this.dollyStart.y
-                    );
+                    // console.log(
+                    //     "distanace so9ak",
+                    //     this.dollyEnd.y / this.dollyStart.y
+                    // );
                     this.dollyEnd.set(0, distance);
                     this.dollyDelta.set(
                         0,
