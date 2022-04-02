@@ -65,6 +65,7 @@ const OrbitControlsView = React.forwardRef(({ camera, ...props }, ref) => {
             },
             onPanResponderMove({ nativeEvent }) {
                 var _a;
+                // console.log(nativeEvent);r
                 return (_a = controls) === null || _a === void 0
                     ? void 0
                     : _a.onTouchMove(nativeEvent);

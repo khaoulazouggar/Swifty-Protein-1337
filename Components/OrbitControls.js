@@ -201,7 +201,9 @@ export class OrbitControls extends EventDispatcher {
         };
         this.dollyIn = (dollyScale) => {
             if (this.object.isPerspectiveCamera) {
+                console.log("top koussal");
                 this.scale /= dollyScale;
+                this.update();
             } else if (this.object.isOrthographicCamera) {
                 this.object.zoom = Math.max(
                     this.minZoom,
@@ -344,7 +346,20 @@ export class OrbitControls extends EventDispatcher {
                 this.panStart.set(x, y);
             }
         };
-        this.handleTouchStartDolly = ({ touches }) => {
+        this.handleTouchStartDolly = ({ touches, locationX, locationY }) => {
+            let t = [];
+
+            if (touches.length > 1) {
+                t.push({ x: touches[0].pageX || 0, y: touches[0].pageY });
+                t.push({ x: touches[1].pageX || 0, y: touches[1].pageY });
+            } else if (identifier !== touches[0]?.identifier) {
+                t.push({ x: locationX || 0, y: locationY || 0 });
+                t.push({ x: touches[0].pageX || 0, y: touches[0].pageY || 0 });
+            }
+            // const dx = t[0].x - t[1].x;
+            // const dy = t[0].y - t[1].y;
+            // const distance = Math.sqrt(dx * dx + dy * dy);
+            // this.dollyStart.set(0, distance);
             const dx = touches[0].pageX - touches[1].pageX;
             const dy = touches[0].pageY - touches[1].pageY;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -391,29 +406,51 @@ export class OrbitControls extends EventDispatcher {
             this.pan(this.panDelta.x, this.panDelta.y);
             this.panStart.copy(this.panEnd);
         };
-        this.handleTouchMoveDolly = ({ touches }) => {
-            if (!Array.isArray(touches)) touches = [];
-            if (!touches[0]) touches[0] = { pageX: 0, pageY: 0 };
-            if (!touches[1])
-                touches[1] = {
-                    pageX: touches[0].pageX || 0,
-                    pageY: touches[0].pageY || 0,
-                };
-            console.log("khassk ghi zoom");
-            const dx = touches[0].pageX - touches[1].pageX;
-            const dy = touches[0].pageY - touches[1].pageY;
-            if (dx * dx + dy * dy > 0) {
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                this.dollyEnd.set(0, distance);
-                this.dollyDelta.set(
-                    0,
-                    Math.pow(
-                        this.dollyEnd.y / this.dollyStart.y,
-                        this.zoomSpeed
-                    )
-                );
-                this.dollyIn(this.dollyDelta.y);
-                this.dollyStart.copy(this.dollyEnd);
+        this.handleTouchMoveDolly = ({
+            touches,
+            locationX,
+            locationY,
+            identifier,
+        }) => {
+            let t = [];
+            if (touches.length > 1) {
+                t.push({ x: touches[0].pageX || 0, y: touches[0].pageY });
+                t.push({ x: touches[1].pageX || 0, y: touches[1].pageY });
+            } else if (identifier != touches[0]?.identifier) {
+                t.push({ x: locationX || 0, y: locationY || 0 });
+                t.push({ x: touches[0].pageX || 0, y: touches[0].pageY || 0 });
+            }
+            // if (!Array.isArray(touches)) touches = [];
+            // if (!touches[0]) touches[0] = { pageX: 0, pageY: 0 };
+            // if (!touches[1])
+            //     touches[1] = {
+            //         pageX: touches[0].pageX || 0,
+            //         pageY: touches[0].pageY || 0,
+            //     };
+            // console.log("khassk ghi zoom");
+            if (t.length) {
+                console.log("top zmimi7");
+                const dx = t[0].x - t[1].x;
+                const dy = t[0].y - t[1].y;
+                if (dx * dx + dy * dy > 0) {
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    console.log("distanace", distance);
+                    console.log(
+                        "distanace so9ak",
+                        this.dollyEnd.y / this.dollyStart.y
+                    );
+                    this.dollyEnd.set(0, distance);
+                    this.dollyDelta.set(
+                        0,
+                        Math.pow(
+                            this.dollyEnd.y / this.dollyStart.y,
+                            this.zoomSpeed
+                        )
+                    );
+                    console.log(this.dollyDelta.y);
+                    this.dollyIn(this.dollyDelta.y);
+                    this.dollyStart.copy(this.dollyEnd);
+                }
             }
         };
         this.handleTouchMoveDollyPan = (event) => {
@@ -591,7 +628,7 @@ export class OrbitControls extends EventDispatcher {
             (_b = (_a = event).preventDefault) === null || _b === void 0
                 ? void 0
                 : _b.call(_a);
-            console.log("event :", event);
+            // console.log("event :", event);
             // console.table(event);
             switch (event.touches.length) {
                 case 1:
@@ -654,9 +691,38 @@ export class OrbitControls extends EventDispatcher {
             (_d = (_c = event).stopPropagation) === null || _d === void 0
                 ? void 0
                 : _d.call(_c);
-
-            if (event.touches.length > 2) this.handleTouchStartDollyPan(event);
-            else
+            // console.log(event);
+            if (event) {
+                // console.log(event.identifier);
+                // console.log(event);
+                // console.log(event.length === 2);
+                // console.log(event.changedTouches[0]);
+                // if (event.changedTouches.touches.length > 0) {
+                // console.log(event.changedTouches.touches[0].identifier);
+                // }
+            }
+            // consrole.log(event);
+            // if (event) {
+            // this.handleTouchStartDollyPan(event);
+            // this.state = STATE.TOUCH_DOLLY_PAN;
+            // console.log("hona");
+            // }
+            // {this.handleTouchStartDollyPan(event)};
+            // else
+            // console.log(event);
+            if (
+                event.identifier &&
+                event?.touches[0]?.identifier &&
+                event.identifier != event?.touches[0]?.identifier
+            ) {
+                console.log(
+                    "-------------------------------------------------"
+                );
+                this.state = STATE.TOUCH_DOLLY_ROTATE;
+                this.handleTouchStartDollyRotate(event);
+                this.handleTouchMoveDollyPan(event);
+                this.update();
+            } else
                 switch (this.state) {
                     case STATE.TOUCH_ROTATE:
                         if (this.enableRotate === false) return;
