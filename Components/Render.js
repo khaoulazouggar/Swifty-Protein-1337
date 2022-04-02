@@ -3,7 +3,7 @@ import { GLView } from "expo-gl";
 import * as THREE from "three";
 import { Renderer } from "expo-three";
 import { Dimensions } from "react-native";
-import OrbitControlsView from "expo-three-orbit-controls";
+import OrbitControlsView from "./OrbitControlView";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -24,6 +24,7 @@ const Render = () => {
         let diffZ = rangedPoints[5] - rangedPoints[4];
         let diffX = rangedPoints[1] - rangedPoints[0];
         let diffY = rangedPoints[3] - rangedPoints[2];
+        var board = new THREE.Group();
         camera.position.set(0, 0, 100 * diffZ);
         setCamera(camera);
         // camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -51,7 +52,7 @@ const Render = () => {
                 atoms[i].position.z
             );
             sphere.frustumCulled = false;
-            scene.add(sphere);
+            board.add(sphere);
         }
         for (let i = 0; i < connections.length; i++) {
             let start = new THREE.Vector3(
@@ -94,9 +95,10 @@ const Render = () => {
                     materialCyl
                 );
                 cylinderMesh.frustumCulled = false;
-                scene.add(cylinderMesh);
+                board.add(cylinderMesh);
             }
         }
+        scene.add(board);
         // const sphere1 = new THREE.Mesh(geometry, material);
         // const sphere1 = new THREE.Mesh(geometry, material);
         // const sphere2 = new THREE.Mesh(geometry, material);
