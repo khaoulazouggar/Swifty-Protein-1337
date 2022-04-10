@@ -171,12 +171,25 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
         light.position.set(0, 0, 50);
         scene.add(light);
 
+        if (pressed) {
+            const raycaster = new THREE.Raycaster();
+            const pointer = new THREE.Vector2();
+            // pointer.x = (pressed.x / gl.drawingBufferWidth) * 2 - 1;
+            // pointer.y = -(pressed.y / gl.drawingBufferHeight) * 2 + 1;
+        }
         const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
         directionalLight.position.set(0, 0, 100);
         scene.add(directionalLight);
         const animate = () => {
+            // console.log(scene.children);
             timeout = requestAnimationFrame(animate);
-
+            if (pressed) {
+                raycaster.setFromCamera(pointer, camera);
+                const intersects = raycaster.intersectObjects(scene.children);
+                for (let i = 0; i < intersects.length; i++) {
+                    intersects[i].object.material.color.set(0xff0000);
+                }
+            }
             renderer.render(scene, camera);
             gl.endFrameEXP();
         };
@@ -185,12 +198,18 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     useEffect(() => {
         return () => clearTimeout(timeout);
     }, []);
+    const [pressed, setPressed] = useState(null);
     const windowWidth = Dimensions.get("window").width;
     const windowHeight = Dimensions.get("window").height;
     const [camera, setCamera] = useState();
     let timeout;
     return (
-        <OrbitControlsView camera={camera} style={{ flex: 1 }}>
+        <OrbitControlsView
+            pressed={pressed}
+            setPressed={setPressed}
+            camera={camera}
+            style={{ flex: 1 }}
+        >
             <GLView
                 style={{ width: windowWidth, height: windowHeight }}
                 onContextCreate={onContextCreate}
