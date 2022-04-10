@@ -434,7 +434,7 @@ export class OrbitControls extends EventDispatcher {
                 const dy = t[0].y - t[1].y;
                 if (dx * dx + dy * dy > 0) {
                     const distance = Math.sqrt(dx * dx + dy * dy);
-                    console.log("distanace", distance);
+                    // console.log("distanace", distance);
                     // console.log(
                     //     "distanace so9ak",
                     //     this.dollyEnd.y / this.dollyStart.y
@@ -447,7 +447,7 @@ export class OrbitControls extends EventDispatcher {
                             this.zoomSpeed
                         )
                     );
-                    console.log(this.dollyDelta.y);
+                    // console.log(this.dollyDelta.y);
                     this.dollyIn(this.dollyDelta.y);
                     this.dollyStart.copy(this.dollyEnd);
                 }
@@ -652,7 +652,7 @@ export class OrbitControls extends EventDispatcher {
                 case 2:
                     switch (this.touches.TWO) {
                         case TOUCH.DOLLY_PAN:
-                            console.log("TOUCH.DOLLY_PAN");
+                            console.log("TOUCH.DOLLY_PAN == Zoom");
                             if (
                                 this.enableZoom === false &&
                                 this.enablePan === false
