@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import Axios from "axios";
 import { Appearance, useColorScheme } from "react-native-appearance";
 import useParse from "../hooks/useParse";
+import useColors from "../hooks/useColors";
 
 export default function List() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,6 +29,11 @@ export default function List() {
   const [connections, setConnections] = useState([]);
   const [rangedPoints, setRangedPoints] = useState([]);
   Appearance.getColorScheme();
+
+  // useEffect(() => {
+  //   const color = useColors("H");
+  //   console.log("--------------", color);
+  // }, []);
 
   // Home Screen always be displayed when relaunching the app
   useEffect(() => {

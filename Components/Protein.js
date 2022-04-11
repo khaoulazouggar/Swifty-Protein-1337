@@ -63,24 +63,42 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     for (let i = 0; i < atoms.length; i++) {
       const sphere = new THREE.Mesh(geometry, material);
       sphere.position.set(
-        (atoms[i].position.x - rangedPoints[0] - diffX / 2) * 10,
-        (atoms[i].position.y - rangedPoints[2] - diffY / 2) * 10,
-        (atoms[i].position.z - rangedPoints[4] - diffZ / 2) * 10
+        (atoms[i].position.x - rangedPoints[0] - diffX / 2) * 20,
+        (atoms[i].position.y - rangedPoints[2] - diffY / 2) * 20,
+        (atoms[i].position.z - rangedPoints[4] - diffZ / 2) * 20
       );
       sphere.frustumCulled = false;
       board.add(sphere);
     }
     for (let i = 0; i < connections.length; i++) {
       let start = new THREE.Vector3(
-        atoms[connections[i].index - 1].position.x,
-        atoms[connections[i].index - 1].position.y,
-        atoms[connections[i].index - 1].position.z
+        (atoms[connections[i].index - 1].position.x -
+          rangedPoints[0] -
+          diffX / 2) *
+          20,
+        (atoms[connections[i].index - 1].position.y -
+          rangedPoints[2] -
+          diffY / 2) *
+          20,
+        (atoms[connections[i].index - 1].position.z -
+          rangedPoints[4] -
+          diffZ / 2) *
+          20
       );
       for (let j = 0; j < connections[i].connects.length; j++) {
         let end = new THREE.Vector3(
-          atoms[connections[i].connects[j] - 1].position.x,
-          atoms[connections[i].connects[j] - 1].position.y,
-          atoms[connections[i].connects[j] - 1].position.z
+          (atoms[connections[i].connects[j] - 1].position.x -
+            rangedPoints[0] -
+            diffX / 2) *
+            20,
+          (atoms[connections[i].connects[j] - 1].position.y -
+            rangedPoints[2] -
+            diffY / 2) *
+            20,
+          (atoms[connections[i].connects[j] - 1].position.z -
+            rangedPoints[4] -
+            diffZ / 2) *
+            20
         );
         let dist = start.distanceTo(end);
         const materialCyl = new THREE.MeshBasicMaterial({
@@ -134,6 +152,7 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
       // if (width / height >= 1) camera.aspect = width / height;
       // else camera.aspect = height / width;
       camera.updateProjectionMatrix();
+      directionalLight.position.copy(camera.position);
       renderer.render(scene, camera);
       gl.endFrameEXP();
     };
