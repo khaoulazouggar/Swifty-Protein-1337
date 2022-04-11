@@ -11,20 +11,12 @@ import { useRoute } from "@react-navigation/native";
 import useOrientation from "../hooks/useOrientation";
 
 const Protein = () => {
-  // const [load, setLoad] = useState(true);
-  // const [atoms, setAtoms] = useState([]);
-  // const [connections, setConnections] = useState([]);
-  // const [rangedPoints, setRangedPoints] = useState([]);
   const route = useRoute();
   const result = route?.params.data;
   const load = route?.params.load;
   const atoms = route?.params.atoms;
   const connections = route?.params.connections;
   const rangedPoints = route?.params.rangedPoints;
-
-  useEffect(() => {
-    // console.log(route.params);
-  }, []);
 
   return (
     <Draw rangedPoints={rangedPoints} atoms={atoms} connections={connections} />
@@ -35,6 +27,7 @@ export default Protein;
 
 const Draw = ({ rangedPoints, atoms, connections }) => {
   const orientation = useOrientation();
+
   const onContextCreate = async (gl) => {
     var scene = new THREE.Scene();
     let aspect;
@@ -44,13 +37,13 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     let diffX = rangedPoints[1] - rangedPoints[0];
     let diffY = rangedPoints[3] - rangedPoints[2];
     var board = new THREE.Group();
-    camera.position.set(0, 0, 100 * diffZ);
+    camera.position.set(0, 0, 100);
     setCamera(camera);
     const renderer = new Renderer({ gl });
     renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
-    renderer.setClearColor(0x000000, 1);
-    scene.add(new THREE.AxesHelper(100));
-    const geometry = new THREE.SphereGeometry((diffX * 5) / 10);
+    renderer.setClearColor(0x000000, 0.5);
+    // scene.add(new THREE.AxesHelper(100));
+    const geometry = new THREE.SphereGeometry(1);
     const material = new THREE.MeshPhysicalMaterial({
       color: 0xffaaaf,
       emissive: 0x000000,
@@ -63,48 +56,30 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     for (let i = 0; i < atoms.length; i++) {
       const sphere = new THREE.Mesh(geometry, material);
       sphere.position.set(
-        (atoms[i].position.x - rangedPoints[0] - diffX / 2) * 20,
-        (atoms[i].position.y - rangedPoints[2] - diffY / 2) * 20,
-        (atoms[i].position.z - rangedPoints[4] - diffZ / 2) * 20
+        atoms[i].position.x,
+        atoms[i].position.y,
+        atoms[i].position.z
       );
-      sphere.frustumCulled = false;
+      // sphere.frustumCulled = false;
       board.add(sphere);
     }
     for (let i = 0; i < connections.length; i++) {
       let start = new THREE.Vector3(
-        (atoms[connections[i].index - 1].position.x -
-          rangedPoints[0] -
-          diffX / 2) *
-          20,
-        (atoms[connections[i].index - 1].position.y -
-          rangedPoints[2] -
-          diffY / 2) *
-          20,
-        (atoms[connections[i].index - 1].position.z -
-          rangedPoints[4] -
-          diffZ / 2) *
-          20
+        atoms[connections[i].index - 1].position.x,
+        atoms[connections[i].index - 1].position.y,
+        atoms[connections[i].index - 1].position.z
       );
       for (let j = 0; j < connections[i].connects.length; j++) {
         let end = new THREE.Vector3(
-          (atoms[connections[i].connects[j] - 1].position.x -
-            rangedPoints[0] -
-            diffX / 2) *
-            20,
-          (atoms[connections[i].connects[j] - 1].position.y -
-            rangedPoints[2] -
-            diffY / 2) *
-            20,
-          (atoms[connections[i].connects[j] - 1].position.z -
-            rangedPoints[4] -
-            diffZ / 2) *
-            20
+          atoms[connections[i].connects[j] - 1].position.x,
+          atoms[connections[i].connects[j] - 1].position.y,
+          atoms[connections[i].connects[j] - 1].position.z
         );
         let dist = start.distanceTo(end);
         const materialCyl = new THREE.MeshBasicMaterial({
           color: 0xfffff0,
         });
-        const cylinderGeometry = new THREE.CylinderGeometry(0.5, 0.5, dist, 64);
+        const cylinderGeometry = new THREE.CylinderGeometry(0.2, 0.2, dist, 64);
         let axis = new THREE.Vector3(
           start.x - end.x,
           start.y - end.y,
@@ -139,7 +114,6 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     directionalLight.position.set(0, 0, 100);
     scene.add(directionalLight);
     const animate = () => {
-      // console.log(scene.children);
       camera.updateProjectionMatrix();
       timeout = requestAnimationFrame(animate);
       if (pressed) {
@@ -149,8 +123,6 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
           intersects[i].object.material.color.set(0xff0000);
         }
       }
-      // if (width / height >= 1) camera.aspect = width / height;
-      // else camera.aspect = height / width;
       camera.updateProjectionMatrix();
       directionalLight.position.copy(camera.position);
       renderer.render(scene, camera);

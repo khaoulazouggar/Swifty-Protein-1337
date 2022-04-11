@@ -5,6 +5,13 @@ const useParse = (data, setLoad, setAtoms, setConnections, setRangedPoints) => {
   let atoms = [];
   let connections = [];
 
+  const mapInterval = (val, A, B, a, b) => {
+    // To map
+    // [A, B] --> [a, b]
+    // use this formula
+    // (val - A)*(b-a)/(B-A) + a
+    return (val - A) * ((b - a) / (B - A)) + a;
+  };
   let [, , , , , , maxX, maxY, maxZ] = result[0].split(/\s+/);
   let [minX, minY, minZ] = [maxX, maxY, maxZ];
   for (let i = 0; i < result.length; i++) {
@@ -39,10 +46,27 @@ const useParse = (data, setLoad, setAtoms, setConnections, setRangedPoints) => {
       }
     }
   }
+  let diffX = maxX - minX;
+  let diffY = maxY - minY;
+  let diffZ = maxZ - minZ;
+  let t = atoms.map((atom) => {
+    let mapedAtom = {
+      ...atom,
+      position: {
+        x: (atom.position.x - minX - diffX / 2) * 20,
+        y: (atom.position.y - minY - diffY / 2) * 20,
+        z: (atom.position.z - minZ - diffZ / 2) * 20,
+      },
+    };
+    mapedAtom.position.x = mapInterval(mapedAtom.position.x, minX, maxX, -2, 2);
+    mapedAtom.position.y = mapInterval(mapedAtom.position.y, minX, maxX, -2, 2);
+    mapedAtom.position.z = mapInterval(mapedAtom.position.z, minX, maxX, -2, 2);
+    return mapedAtom;
+  });
   setRangedPoints([minX, maxX, minY, maxY, minZ, maxZ]);
   setConnections(connections);
-  setAtoms(atoms);
-  console.log(connections);
+  setAtoms(t);
+  console.log(atoms);
 };
 
 export default useParse;
