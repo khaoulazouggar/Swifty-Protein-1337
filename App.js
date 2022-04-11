@@ -31,9 +31,17 @@ export default function App() {
             }}
           />
           <Stack.Screen
-            name="Render"
+            name="Protein"
             component={Protein}
-            options={{ headerShown: false }}
+            options={{
+              headerStyle: {
+                backgroundColor: "#9CB9D8",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+            }}
           />
         </Stack.Group>
       </Stack.Navigator>

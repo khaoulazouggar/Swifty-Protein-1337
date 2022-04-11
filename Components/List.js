@@ -42,6 +42,15 @@ export default function List() {
     });
   }, []);
 
+  useEffect(() => {
+    if (atoms.length)
+      navigation.navigate("Protein", {
+        atoms,
+        connections,
+        rangedPoints,
+      });
+  }, [atoms]);
+
   //get Ligand
   const getLigand = (item) => {
     setLoad(true);
@@ -54,13 +63,13 @@ export default function List() {
           setConnections,
           setRangedPoints
         );
-        navigation.navigate("Protein", {
-          data: parsed,
-          load: loader,
-          atoms,
-          connections,
-          rangedPoints,
-        });
+        // navigation.navigate("Protein", {
+        //   data: parsed,
+        //   load: loader,
+        //   atoms,
+        //   connections,
+        //   rangedPoints,
+        // });
         setLoad(false);
       })
       .catch((er) =>
@@ -157,10 +166,9 @@ const styles = StyleSheet.create({
 
 const dark_styles = StyleSheet.create({
   container: {
-    backgroundColor: "black",
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "black",
   },
   search: {
     margin: 20,

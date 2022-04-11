@@ -91,8 +91,12 @@ const OrbitControlsView = React.forwardRef(
       controls.enablePan = false;
       controls.target.set(0, 0, 0);
       controls.enableDamping = true;
+      if (controls.width / controls.height >= 1)
+        camera.aspect = controls.width / controls.height;
+      else camera.aspect = controls.height / controls.width;
+      camera.updateProjectionMatrix();
       controls.update();
-      console.log(pressed);
+      //   console.log(pressed);
     }, [size, controls, pressed]);
     return (
       <View

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import { useRoute } from "@react-navigation/native";
+import useOrientation from "../hooks/useOrientation";
 
 const Protein = () => {
   // const [load, setLoad] = useState(true);
@@ -20,40 +21,27 @@ const Protein = () => {
   const atoms = route?.params.atoms;
   const connections = route?.params.connections;
   const rangedPoints = route?.params.rangedPoints;
-  // useEffect(() => {
-  //   axios
-  //     .get("https://files.rcsb.org/ligands/view/010_ideal.pdb")
-  //     .then((res) => {
-  //       dataParse(res.data);
-  //     });
-  // }, []);
 
-  if (!load)
-    return (
-      <Draw
-        rangedPoints={rangedPoints}
-        atoms={atoms}
-        connections={connections}
-      />
-    );
+  useEffect(() => {
+    // console.log(route.params);
+  }, []);
+
   return (
-    <View>
-      <Text>loading</Text>
-    </View>
+    <Draw rangedPoints={rangedPoints} atoms={atoms} connections={connections} />
   );
 };
 
 export default Protein;
 
 const Draw = ({ rangedPoints, atoms, connections }) => {
+  const orientation = useOrientation();
   const onContextCreate = async (gl) => {
     var scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      gl.drawingBufferWidth / gl.drawingBufferHeight,
-      0.1,
-      2000
-    );
+    let aspect;
+    if (gl.drawingBufferWidth > gl.drawingBufferHeight)
+      aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
+    else aspect = gl.drawingBufferHeight / gl.drawingBufferWidth;
+    const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 2000);
     let diffZ = rangedPoints[5] - rangedPoints[4];
     let diffX = rangedPoints[1] - rangedPoints[0];
     let diffY = rangedPoints[3] - rangedPoints[2];
@@ -136,6 +124,7 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     scene.add(directionalLight);
     const animate = () => {
       // console.log(scene.children);
+      camera.updateProjectionMatrix();
       timeout = requestAnimationFrame(animate);
       if (pressed) {
         raycaster.setFromCamera(pointer, camera);
@@ -144,6 +133,9 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
           intersects[i].object.material.color.set(0xff0000);
         }
       }
+      if (gl.drawingBufferWidth / gl.drawingBufferHeight >= 1)
+        camera.aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
+      else camera.aspect = gl.drawingBufferHeight / gl.drawingBufferWidth;
       renderer.render(scene, camera);
       gl.endFrameEXP();
     };
@@ -153,10 +145,11 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     return () => clearTimeout(timeout);
   }, []);
   const [pressed, setPressed] = useState(null);
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
+  // const windowWidth = Dimensions.get("window").width;
+  // const windowHeight = Dimensions.get("window").height;
   const [camera, setCamera] = useState();
   let timeout;
+
   return (
     <OrbitControlsView
       pressed={pressed}
@@ -164,10 +157,7 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
       camera={camera}
       style={{ flex: 1 }}
     >
-      <GLView
-        style={{ width: windowWidth, height: windowHeight }}
-        onContextCreate={onContextCreate}
-      />
+      <GLView style={{ flex: 1 }} onContextCreate={onContextCreate} />
     </OrbitControlsView>
   );
 };

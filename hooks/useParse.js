@@ -40,9 +40,9 @@ const useParse = (data, setLoad, setAtoms, setConnections, setRangedPoints) => {
     }
   }
   setRangedPoints([minX, maxX, minY, maxY, minZ, maxZ]);
-  setAtoms(atoms);
   setConnections(connections);
-  setLoad(false);
+  setAtoms(atoms);
+  console.log(connections);
 };
 
 export default useParse;
