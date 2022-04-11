@@ -19,9 +19,9 @@ const useParse = (data, setLoad, setAtoms, setConnections, setRangedPoints) => {
       atoms.push({
         name: tmp[11],
         position: {
-          x: tmp[6] * 10,
-          y: tmp[7] * 10,
-          z: tmp[8] * 10,
+          x: tmp[6],
+          y: tmp[7],
+          z: tmp[8],
         },
       });
     } else if (tmp[0] === "CONECT" && tmp.length > 1) {

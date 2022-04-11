@@ -63,9 +63,9 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     for (let i = 0; i < atoms.length; i++) {
       const sphere = new THREE.Mesh(geometry, material);
       sphere.position.set(
-        atoms[i].position.x,
-        atoms[i].position.y,
-        atoms[i].position.z
+        (atoms[i].position.x - rangedPoints[0] - diffX / 2) * 10,
+        (atoms[i].position.y - rangedPoints[2] - diffY / 2) * 10,
+        (atoms[i].position.z - rangedPoints[4] - diffZ / 2) * 10
       );
       sphere.frustumCulled = false;
       board.add(sphere);
