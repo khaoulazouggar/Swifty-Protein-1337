@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./Components/Home";
 import List from "./Components/List";
+import Protein from "./Components/Protein";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,11 @@ export default function App() {
                 fontWeight: "bold",
               },
             }}
+          />
+          <Stack.Screen
+            name="Render"
+            component={Protein}
+            options={{ headerShown: false }}
           />
         </Stack.Group>
       </Stack.Navigator>

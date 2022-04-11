@@ -14,6 +14,7 @@ import data from "./ligands.json";
 import { useNavigation } from "@react-navigation/native";
 import Axios from "axios";
 import { Appearance, useColorScheme } from "react-native-appearance";
+import useParse from "../hooks/useParse";
 
 export default function List() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,6 +23,10 @@ export default function List() {
   const appState = useRef(AppState.currentState);
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
+  const [loader, setLoader] = useState(true);
+  const [atoms, setAtoms] = useState([]);
+  const [connections, setConnections] = useState([]);
+  const [rangedPoints, setRangedPoints] = useState([]);
   Appearance.getColorScheme();
 
   // Home Screen always be displayed when relaunching the app
@@ -42,11 +47,20 @@ export default function List() {
     setLoad(true);
     Axios(`https://files.rcsb.org/ligands/view/${item}_model.pdb`)
       .then((res) => {
-        // const parsed = useParse(res.data);
-        // navigation.navigate("Protein", {
-        //   data: parsed,
-        // });
-        console.log(res.data);
+        const parsed = useParse(
+          res.data,
+          setLoader,
+          setAtoms,
+          setConnections,
+          setRangedPoints
+        );
+        navigation.navigate("Protein", {
+          data: parsed,
+          load: loader,
+          atoms,
+          connections,
+          rangedPoints,
+        });
         setLoad(false);
       })
       .catch((er) =>
