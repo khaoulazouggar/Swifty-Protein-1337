@@ -38,9 +38,7 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
   const onContextCreate = async (gl) => {
     var scene = new THREE.Scene();
     let aspect;
-    if (gl.drawingBufferWidth > gl.drawingBufferHeight)
-      aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
-    else aspect = gl.drawingBufferHeight / gl.drawingBufferWidth;
+    aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
     const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 2000);
     let diffZ = rangedPoints[5] - rangedPoints[4];
     let diffX = rangedPoints[1] - rangedPoints[0];
@@ -133,9 +131,9 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
           intersects[i].object.material.color.set(0xff0000);
         }
       }
-      if (gl.drawingBufferWidth / gl.drawingBufferHeight >= 1)
-        camera.aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
-      else camera.aspect = gl.drawingBufferHeight / gl.drawingBufferWidth;
+      // if (width / height >= 1) camera.aspect = width / height;
+      // else camera.aspect = height / width;
+      camera.updateProjectionMatrix();
       renderer.render(scene, camera);
       gl.endFrameEXP();
     };
@@ -148,16 +146,29 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
   // const windowWidth = Dimensions.get("window").width;
   // const windowHeight = Dimensions.get("window").height;
   const [camera, setCamera] = useState();
+  const [width, setWidth] = useState();
+  const [height, setHeight] = useState();
   let timeout;
 
+  useEffect(() => {
+    setWidth(Dimensions.get("window").width);
+    setHeight(Dimensions.get("window").height);
+    const windowWidth = Dimensions.get("window").width;
+    const windowHeight = Dimensions.get("window").height;
+    // console.log("width :", width);
+    // console.log("height:", height);
+  }, [orientation]);
   return (
     <OrbitControlsView
       pressed={pressed}
       setPressed={setPressed}
       camera={camera}
-      style={{ flex: 1 }}
+      style={{ width: width, height: height }}
     >
-      <GLView style={{ flex: 1 }} onContextCreate={onContextCreate} />
+      <GLView
+        style={{ width: width, height: height }}
+        onContextCreate={onContextCreate}
+      />
     </OrbitControlsView>
   );
 };
