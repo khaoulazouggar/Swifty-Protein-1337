@@ -2,7 +2,7 @@ const useParse = (data, setAtoms, setConnections, setRangedPoints) => {
   const result = data.split(/\r?\n/);
   let atoms = [];
   let connections = [];
-  console.log(data);
+  // console.log(data);
   const mapInterval = (val, A, B, a, b) => {
     // if (B - A === 0) console.log("asdfhaksjdfhlaskdfhlaks");
     //     // To map
@@ -41,7 +41,7 @@ const useParse = (data, setAtoms, setConnections, setRangedPoints) => {
         let con = { index: pikala, connects: [] };
         for (let j = 2; j < tmp.length; j++) {
           let x = parseInt(tmp[j]);
-          if (x <= atoms.length && x > pikala) {
+          if (x <= atoms.length) {
             con.connects.push(x);
           }
         }
@@ -49,30 +49,6 @@ const useParse = (data, setAtoms, setConnections, setRangedPoints) => {
       }
     }
   }
-  console.log("maxX : ", maxX);
-  console.log("minX : ", minX);
-  console.log("maxY : ", maxY);
-  console.log("minY : ", minY);
-  console.log("maxZ : ", maxZ);
-  console.log("minZ : ", minZ);
-  const mapedMaxX = mapInterval(maxX, minX, maxX, -10, 10);
-  const mapedMinX = mapInterval(minX, minX, maxX, -10, 10);
-
-  const mapedMinY = mapInterval(minY, minY, maxY, -10, 10);
-  const mapedMaxY = mapInterval(maxY, minY, maxY, -10, 10);
-
-  const mapedMinZ = mapInterval(minZ, minZ, maxZ, -10, 10);
-  const mapedMaxZ = mapInterval(maxZ, minZ, maxZ, -10, 10);
-
-  // const mapedDiffX = mapedMaxX - mapedMinX;
-  // const mapedDiffY = mapedMaxY - mapedMinY;
-  // const mapedDiffZ = mapedMaxZ - mapedMinZ;
-  // console.log(mapedMinX);
-  // console.log(mapedMinY);
-  // console.log(mapedMinZ);
-  // console.log(mapedMaxX);
-  // console.log(mapedMaxY);
-  // console.log(mapedMaxZ);
   let t = atoms.map((atom) => {
     let mapedAtom = {
       ...atom,
@@ -103,28 +79,12 @@ const useParse = (data, setAtoms, setConnections, setRangedPoints) => {
       -10,
       10
     );
-    // mapedAtom.position.x =
-    //   mapInterval(mapedAtom.position.x, minX, maxX, -10, 10) -
-    //   mapedMinX -
-    //   mapedDiffX / 2;
-    // mapedAtom.position.y =
-    //   mapInterval(mapedAtom.position.y, minY, maxY, -10, 10) -
-    //   mapedMinY -
-    //   mapedDiffY / 2;
-    // mapedAtom.position.z =
-    //   mapInterval(mapedAtom.position.z, minZ, maxZ, -10, 10) -
-    //   mapedMinZ -
-    //   mapedDiffZ / 2;
     return mapedAtom;
   });
   setRangedPoints([minX, maxX, minY, maxY, minZ, maxZ]);
   setConnections(connections);
-<<<<<<< HEAD
-  setAtoms(atoms);
-=======
   setAtoms(t);
   // console.log(t);
->>>>>>> 877ddf774b8e1e53646790608071abb77690667d
 };
 
 export default useParse;

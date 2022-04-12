@@ -21,7 +21,7 @@ const Protein = () => {
 export default Protein;
 
 // Draw function
-const Draw = ({ rangedPoints, atoms, connections }) => {
+const Draw = ({ atoms, connections }) => {
   const orientation = useOrientation();
 
   const onContextCreate = async (gl) => {
@@ -94,8 +94,7 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     scene.add(board);
 
     if (pressed) {
-      const raycaster = new THREE.Raycaster();
-      const pointer = new THREE.Vector2();
+      // const pointer = new THREE.Vector2();
       // pointer.x = (pressed.x / gl.drawingBufferWidth) * 2 - 1;
       // pointer.y = -(pressed.y / gl.drawingBufferHeight) * 2 + 1;
     }
@@ -105,11 +104,16 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     const animate = () => {
       timeout = requestAnimationFrame(animate);
       if (pressed) {
+        let raycaster = new THREE.Raycaster();
+        let pointer = new THREE.Vector2();
+        pointer.x = (pressed.x / gl.drawingBufferWidth) * 2 - 1;
+        pointer.y = -(pressed.y / gl.drawingBufferHeight) * 2 + 1;
         raycaster.setFromCamera(pointer, camera);
         const intersects = raycaster.intersectObjects(scene.children);
         for (let i = 0; i < intersects.length; i++) {
           intersects[i].object.material.color.set(0xff0000);
         }
+        console.log(intersects);
       }
       camera.updateProjectionMatrix();
       directionalLight.position.copy(camera.position);
@@ -121,6 +125,10 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
   useEffect(() => {
     return () => clearTimeout(timeout);
   }, []);
+
+  useEffect(() => {
+    console.log(pressed);
+  }, [pressed]);
   const [pressed, setPressed] = useState(null);
   // const windowWidth = Dimensions.get("window").width;
   // const windowHeight = Dimensions.get("window").height;
@@ -134,8 +142,6 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     setHeight(Dimensions.get("window").height);
     const windowWidth = Dimensions.get("window").width;
     const windowHeight = Dimensions.get("window").height;
-    // console.log("width :", width);
-    // console.log("height:", height);
   }, [orientation]);
   return (
     <OrbitControlsView
