@@ -23,22 +23,19 @@ export default Protein;
 // Draw function
 const Draw = ({ rangedPoints, atoms, connections }) => {
   const orientation = useOrientation();
+
   const onContextCreate = async (gl) => {
     var scene = new THREE.Scene();
     let aspect;
     aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
-    const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 2000);
-    let diffZ = rangedPoints[5] - rangedPoints[4];
-    let diffX = rangedPoints[1] - rangedPoints[0];
-    let diffY = rangedPoints[3] - rangedPoints[2];
+    const camera = new THREE.PerspectiveCamera(75, aspect, 0.01, 2000);
     var board = new THREE.Group();
-    camera.position.set(0, 0, 100 * diffZ);
+    camera.position.set(0, 0, 50);
     setCamera(camera);
     const renderer = new Renderer({ gl });
     renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
     renderer.setClearColor(0x000000, 1);
-    scene.add(new THREE.AxesHelper(100));
-    const geometry = new THREE.SphereGeometry((diffX * 5) / 10);
+    const geometry = new THREE.SphereGeometry(0.5);
     const material = new THREE.MeshPhysicalMaterial({
       color: 0xffaaaf,
       emissive: 0x000000,
@@ -51,48 +48,30 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     for (let i = 0; i < atoms.length; i++) {
       const sphere = new THREE.Mesh(geometry, material);
       sphere.position.set(
-        (atoms[i].position.x - rangedPoints[0] - diffX / 2) * 20,
-        (atoms[i].position.y - rangedPoints[2] - diffY / 2) * 20,
-        (atoms[i].position.z - rangedPoints[4] - diffZ / 2) * 20
+        atoms[i].position.x,
+        atoms[i].position.y,
+        atoms[i].position.z
       );
-      sphere.frustumCulled = false;
+      // sphere.frustumCulled = false;
       board.add(sphere);
     }
     for (let i = 0; i < connections.length; i++) {
       let start = new THREE.Vector3(
-        (atoms[connections[i].index - 1].position.x -
-          rangedPoints[0] -
-          diffX / 2) *
-          20,
-        (atoms[connections[i].index - 1].position.y -
-          rangedPoints[2] -
-          diffY / 2) *
-          20,
-        (atoms[connections[i].index - 1].position.z -
-          rangedPoints[4] -
-          diffZ / 2) *
-          20
+        atoms[connections[i].index - 1].position.x,
+        atoms[connections[i].index - 1].position.y,
+        atoms[connections[i].index - 1].position.z
       );
       for (let j = 0; j < connections[i].connects.length; j++) {
         let end = new THREE.Vector3(
-          (atoms[connections[i].connects[j] - 1].position.x -
-            rangedPoints[0] -
-            diffX / 2) *
-            20,
-          (atoms[connections[i].connects[j] - 1].position.y -
-            rangedPoints[2] -
-            diffY / 2) *
-            20,
-          (atoms[connections[i].connects[j] - 1].position.z -
-            rangedPoints[4] -
-            diffZ / 2) *
-            20
+          atoms[connections[i].connects[j] - 1].position.x,
+          atoms[connections[i].connects[j] - 1].position.y,
+          atoms[connections[i].connects[j] - 1].position.z
         );
         let dist = start.distanceTo(end);
         const materialCyl = new THREE.MeshBasicMaterial({
           color: 0xfffff0,
         });
-        const cylinderGeometry = new THREE.CylinderGeometry(0.5, 0.5, dist, 64);
+        const cylinderGeometry = new THREE.CylinderGeometry(0.1, 0.1, dist, 64);
         let axis = new THREE.Vector3(
           start.x - end.x,
           start.y - end.y,
@@ -113,9 +92,6 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
       }
     }
     scene.add(board);
-    const light = new THREE.AmbientLight(0xffffff, 0.2);
-    light.position.set(0, 0, 50);
-    scene.add(light);
 
     if (pressed) {
       const raycaster = new THREE.Raycaster();
@@ -127,8 +103,6 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     directionalLight.position.set(0, 0, 100);
     scene.add(directionalLight);
     const animate = () => {
-      // console.log(scene.children);
-      camera.updateProjectionMatrix();
       timeout = requestAnimationFrame(animate);
       if (pressed) {
         raycaster.setFromCamera(pointer, camera);
@@ -137,8 +111,6 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
           intersects[i].object.material.color.set(0xff0000);
         }
       }
-      // if (width / height >= 1) camera.aspect = width / height;
-      // else camera.aspect = height / width;
       camera.updateProjectionMatrix();
       directionalLight.position.copy(camera.position);
       renderer.render(scene, camera);
