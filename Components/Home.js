@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function Home() {
   const [isSupported, setisSupported] = useState(false);
   const navigation = useNavigation();
-  const [isAuth, setIsAuth] = useState(false);
+
   // Dark or Light mode
   // Appearance.getColorScheme();
   const colorScheme = useColorScheme();
@@ -36,15 +36,15 @@ export default function Home() {
 
   //handle login with biometricAuth
   const handleBiometricAuth = async () => {
-    const biometricAuth = await LocalAuthentication.authenticateAsync(
-      LocalAuthentication.AuthenticationType.FINGERPRINT
-    );
+    const biometricAuth = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Login with your TouchId/FaceId",
+      disableDeviceFallback: true,
+      cancelLabel: "Cancel",
+    });
     if (!biometricAuth.success)
       alert("Your login Failed, Please try again", "OK");
-    else {
-      setIsAuth(true);
-      navigation.navigate("Ligands", { isAuth, setIsAuth });
-    }
+    // navigation.navigate("Ligands");
+    else navigation.navigate("Ligands");
   };
 
   return (

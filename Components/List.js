@@ -16,7 +16,6 @@ import Axios from "axios";
 import { Appearance, useColorScheme } from "react-native-appearance";
 import useParse from "../hooks/useParse";
 import useColors from "../hooks/useColors";
-import { useRoute } from "@react-navigation/native";
 
 export default function List() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,32 +28,20 @@ export default function List() {
   const [connections, setConnections] = useState([]);
   const [rangedPoints, setRangedPoints] = useState([]);
   Appearance.getColorScheme();
-  const route = useRoute();
-  const isAuth = route?.params.isAuth;
-  const setIsAuth = route?.params.setIsAuth;
 
   useEffect(() => {
     const Info = useColors("H");
     console.log("--------------", Info);
   }, []);
 
-  useEffect(() => {
-    if (!isAuth) {
-      console.log("hi");
-      navigation.navigate("Home");
-    }
-  }, [isAuth]);
-
   // Home Screen always be displayed when relaunching the app
   useEffect(() => {
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
+    AppState.addEventListener("change", (nextAppState) => {
       if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
+        nextAppState.match(/inactive|background/) &&
+        appState.current === "active"
       ) {
-        // navigation.navigate("Home");
-
-        setIsAuth(false);
+        navigation.navigate("Home");
       }
       appState.current = nextAppState;
     });
