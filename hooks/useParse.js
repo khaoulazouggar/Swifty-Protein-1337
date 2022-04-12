@@ -1,6 +1,4 @@
-import { useState } from "react";
-
-const useParse = (data, setLoad, setAtoms, setConnections, setRangedPoints) => {
+const useParse = (data, setAtoms, setConnections, setRangedPoints) => {
   const result = data.split(/\r?\n/);
   let atoms = [];
   let connections = [];
@@ -42,7 +40,6 @@ const useParse = (data, setLoad, setAtoms, setConnections, setRangedPoints) => {
   setRangedPoints([minX, maxX, minY, maxY, minZ, maxZ]);
   setConnections(connections);
   setAtoms(atoms);
-  console.log(connections);
 };
 
 export default useParse;

@@ -6,15 +6,16 @@ import {
   Pressable,
   View,
 } from "react-native";
-import LoopAnimation from "react-native-LoopAnimation";
 import { Appearance, useColorScheme } from "react-native-appearance";
 import * as LocalAuthentication from "expo-local-authentication";
 import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
-  const navigation = useNavigation();
-  Appearance.getColorScheme();
   const [isSupported, setisSupported] = useState(false);
+  const navigation = useNavigation();
+  const [isAuth, setIsAuth] = useState(false);
+  // Dark or Light mode
+  // Appearance.getColorScheme();
   const colorScheme = useColorScheme();
 
   //Check if TouchID or FaceID is supported by the app
@@ -35,32 +36,18 @@ export default function Home() {
 
   //handle login with biometricAuth
   const handleBiometricAuth = async () => {
-    const biometricAuth = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Login with your TouchId/FaceId",
-      disableDeviceFallback: true,
-      cancelLabel: "Cancel",
-    });
+    const biometricAuth = await LocalAuthentication.authenticateAsync(
+      LocalAuthentication.AuthenticationType.FINGERPRINT
+    );
     if (!biometricAuth.success)
-      // alert("Your login Failed, Please try again", "OK");
-      navigation.navigate("Ligands");
-    else navigation.navigate("Ligands");
+      alert("Your login Failed, Please try again", "OK");
+    else {
+      setIsAuth(true);
+      navigation.navigate("Ligands", { isAuth, setIsAuth });
+    }
   };
 
   return (
-    // <View
-    //   style={colorScheme === "light" ? styles.container : dark_styles.container}
-    // >
-    //   {/*this is the background animation */}
-    //   <LoopAnimation
-    //     source={require("../assets/biology.png")}
-    //     duration={10000}
-    //   />
-    //   <View style={styles.bgImage}>
-    //     <Pressable style={styles.button} onPress={handleBiometricAuth}>
-    //       <Text style={styles.text}>LOGIN</Text>
-    //     </Pressable>
-    //   </View>
-    // </View>
     <ImageBackground
       source={require("../assets/biology.png")}
       style={colorScheme == "light" ? styles.bgImage : dark_styles.bgImage}

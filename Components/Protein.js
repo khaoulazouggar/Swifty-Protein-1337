@@ -1,30 +1,17 @@
-import { View, Text } from "react-native";
 import { GLView } from "expo-gl";
 import * as THREE from "three";
 import { Renderer } from "expo-three";
 import { Dimensions } from "react-native";
 import OrbitControlsView from "./OrbitControlView";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 import { useRoute } from "@react-navigation/native";
 import useOrientation from "../hooks/useOrientation";
 
 const Protein = () => {
-  // const [load, setLoad] = useState(true);
-  // const [atoms, setAtoms] = useState([]);
-  // const [connections, setConnections] = useState([]);
-  // const [rangedPoints, setRangedPoints] = useState([]);
   const route = useRoute();
-  const result = route?.params.data;
-  const load = route?.params.load;
   const atoms = route?.params.atoms;
   const connections = route?.params.connections;
   const rangedPoints = route?.params.rangedPoints;
-
-  useEffect(() => {
-    // console.log(route.params);
-  }, []);
 
   return (
     <Draw rangedPoints={rangedPoints} atoms={atoms} connections={connections} />
@@ -33,6 +20,7 @@ const Protein = () => {
 
 export default Protein;
 
+// Draw function
 const Draw = ({ rangedPoints, atoms, connections }) => {
   const orientation = useOrientation();
   const onContextCreate = async (gl) => {

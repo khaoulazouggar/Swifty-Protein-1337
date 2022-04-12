@@ -4,7 +4,7 @@
     "slug": "Swifty-Protein",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon1.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/Psplash.png",
@@ -18,7 +18,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.kzouggar.Swifty-Protein",
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Swifty-proteins needs to use Face ID / Touch ID to authenticate you"
+      }
     },
     "android": {
       "adaptiveIcon": {

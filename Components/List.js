@@ -16,6 +16,7 @@ import Axios from "axios";
 import { Appearance, useColorScheme } from "react-native-appearance";
 import useParse from "../hooks/useParse";
 import useColors from "../hooks/useColors";
+import { useRoute } from "@react-navigation/native";
 
 export default function List() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,16 +25,25 @@ export default function List() {
   const appState = useRef(AppState.currentState);
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
-  const [loader, setLoader] = useState(true);
   const [atoms, setAtoms] = useState([]);
   const [connections, setConnections] = useState([]);
   const [rangedPoints, setRangedPoints] = useState([]);
   Appearance.getColorScheme();
+  const route = useRoute();
+  const isAuth = route?.params.isAuth;
+  const setIsAuth = route?.params.setIsAuth;
 
-  // useEffect(() => {
-  //   const color = useColors("H");
-  //   console.log("--------------", color);
-  // }, []);
+  useEffect(() => {
+    const Info = useColors("H");
+    console.log("--------------", Info);
+  }, []);
+
+  useEffect(() => {
+    if (!isAuth) {
+      console.log("hi");
+      navigation.navigate("Home");
+    }
+  }, [isAuth]);
 
   // Home Screen always be displayed when relaunching the app
   useEffect(() => {
@@ -42,7 +52,9 @@ export default function List() {
         appState.current.match(/inactive|background/) &&
         nextAppState === "active"
       ) {
-        navigation.navigate("Home");
+        // navigation.navigate("Home");
+
+        setIsAuth(false);
       }
       appState.current = nextAppState;
     });
@@ -62,20 +74,7 @@ export default function List() {
     setLoad(true);
     Axios(`https://files.rcsb.org/ligands/view/${item}_model.pdb`)
       .then((res) => {
-        const parsed = useParse(
-          res.data,
-          setLoader,
-          setAtoms,
-          setConnections,
-          setRangedPoints
-        );
-        // navigation.navigate("Protein", {
-        //   data: parsed,
-        //   load: loader,
-        //   atoms,
-        //   connections,
-        //   rangedPoints,
-        // });
+        useParse(res.data, setAtoms, setConnections, setRangedPoints);
         setLoad(false);
       })
       .catch((er) =>
@@ -134,7 +133,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    // justifyContent: "center",
   },
   search: {
     margin: 20,
