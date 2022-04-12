@@ -32,18 +32,14 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     var scene = new THREE.Scene();
     let aspect;
     aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
-    const camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 2000);
-    let diffZ = rangedPoints[5] - rangedPoints[4];
-    let diffX = rangedPoints[1] - rangedPoints[0];
-    let diffY = rangedPoints[3] - rangedPoints[2];
+    const camera = new THREE.PerspectiveCamera(75, aspect, 0.01, 2000);
     var board = new THREE.Group();
-    camera.position.set(0, 0, 100);
+    camera.position.set(0, 0, 50);
     setCamera(camera);
     const renderer = new Renderer({ gl });
     renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
-    renderer.setClearColor(0x000000, 0.5);
-    // scene.add(new THREE.AxesHelper(100));
-    const geometry = new THREE.SphereGeometry(1);
+    renderer.setClearColor(0x000000, 1);
+    const geometry = new THREE.SphereGeometry(0.5);
     const material = new THREE.MeshPhysicalMaterial({
       color: 0xffaaaf,
       emissive: 0x000000,
@@ -79,7 +75,7 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
         const materialCyl = new THREE.MeshBasicMaterial({
           color: 0xfffff0,
         });
-        const cylinderGeometry = new THREE.CylinderGeometry(0.2, 0.2, dist, 64);
+        const cylinderGeometry = new THREE.CylinderGeometry(0.1, 0.1, dist, 64);
         let axis = new THREE.Vector3(
           start.x - end.x,
           start.y - end.y,
@@ -100,9 +96,6 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
       }
     }
     scene.add(board);
-    const light = new THREE.AmbientLight(0xffffff, 0.2);
-    light.position.set(0, 0, 50);
-    scene.add(light);
 
     if (pressed) {
       const raycaster = new THREE.Raycaster();
@@ -114,7 +107,6 @@ const Draw = ({ rangedPoints, atoms, connections }) => {
     directionalLight.position.set(0, 0, 100);
     scene.add(directionalLight);
     const animate = () => {
-      camera.updateProjectionMatrix();
       timeout = requestAnimationFrame(animate);
       if (pressed) {
         raycaster.setFromCamera(pointer, camera);
