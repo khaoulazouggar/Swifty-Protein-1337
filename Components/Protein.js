@@ -24,18 +24,21 @@ export default Protein;
 const Draw = ({ atoms, connections }) => {
   const orientation = useOrientation();
 
+  const handleStateChange = ({ nativeEvent: { pageX, pageY } }) => {
+    console.log(pageX, pageY);
+  };
   const onContextCreate = async (gl) => {
     var scene = new THREE.Scene();
     let aspect;
     aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
     const camera = new THREE.PerspectiveCamera(75, aspect, 0.01, 2000);
     var board = new THREE.Group();
-    camera.position.set(0, 0, 50);
+    camera.position.set(0, 0, 500);
     setCamera(camera);
     const renderer = new Renderer({ gl });
     renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
     renderer.setClearColor(0x000000, 1);
-    const geometry = new THREE.SphereGeometry(0.5);
+    const geometry = new THREE.SphereGeometry(5);
     const material = new THREE.MeshPhysicalMaterial({
       color: 0xffaaaf,
       emissive: 0x000000,
@@ -71,7 +74,7 @@ const Draw = ({ atoms, connections }) => {
         const materialCyl = new THREE.MeshBasicMaterial({
           color: 0xfffff0,
         });
-        const cylinderGeometry = new THREE.CylinderGeometry(0.1, 0.1, dist, 64);
+        const cylinderGeometry = new THREE.CylinderGeometry(1, 1, dist, 64);
         let axis = new THREE.Vector3(
           start.x - end.x,
           start.y - end.y,
@@ -145,9 +148,10 @@ const Draw = ({ atoms, connections }) => {
   }, [orientation]);
   return (
     <OrbitControlsView
-      pressed={pressed}
-      setPressed={setPressed}
+      // pressed={pressed}
+      // setPressed={setPressed}
       camera={camera}
+      onTouchEndCapture={handleStateChange}
       style={{ width: width, height: height }}
     >
       <GLView
