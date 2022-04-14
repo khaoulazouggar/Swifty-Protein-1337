@@ -31,11 +31,12 @@ const Protein = () => {
   // scene
   const scene = new THREE.Scene();
   //camera
-  //   useEffect(() => {
-  //     let aspect = height - width > 0 ? height / width : width / height;
-  //     camera.aspect = aspect;
-  //     camera.updateProjectionMatrix();
-  //   }, [height]);
+  useEffect(() => {
+    let aspect = height - width > 0 ? height / width : width / height;
+    camera.aspect = aspect;
+    camera.updateProjectionMatrix();
+    console.log(height, width);
+  }, [height]);
   const camera = new THREE.PerspectiveCamera(90, aspect, 0.01, 2000);
   // Raycast
   const raycaster = new THREE.Raycaster();
@@ -121,6 +122,7 @@ const Protein = () => {
       style={{ width: width, height: height }}
     >
       <GLView
+        key={height}
         style={{ width: width, height: height }}
         onContextCreate={async (gl) => {
           /*||||||||||||||Camera||||||||||||||*/
