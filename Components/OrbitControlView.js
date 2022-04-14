@@ -14,7 +14,6 @@ function polyfillEventTouches(nativeEvent) {
 const OrbitControlsView = React.forwardRef(({ camera, ...props }, ref) => {
   var _a;
   const [size, setSize] = React.useState(null);
-  // const [pressed, setPressed] = React.useState(null);
   const viewRef = React.useRef(null);
   const controls = React.useMemo(() => {
     var _a;
@@ -39,10 +38,6 @@ const OrbitControlsView = React.forwardRef(({ camera, ...props }, ref) => {
     function onTouchEnded(nativeEvent) {
       var _a;
       const polyfill = polyfillEventTouches(nativeEvent);
-      // If only one touch then we may be encountering the bug where pan responder returns a two finger touch-end event in two different calls. :/
-      // RNGH doesn't have this issue.
-      // console.log(polyfill);
-      // setPressed({ x: polyfill.locationX, y: polyfill.locationY });
       const isMisfiredNativeGesture =
         Platform.OS !== "web" && nativeEvent.identifier > 1;
       if (isMisfiredNativeGesture) {
@@ -65,7 +60,6 @@ const OrbitControlsView = React.forwardRef(({ camera, ...props }, ref) => {
       },
       onPanResponderMove({ nativeEvent }) {
         var _a;
-        // console.log(nativeEvent);r
         return (_a = controls) === null || _a === void 0
           ? void 0
           : _a.onTouchMove(nativeEvent);

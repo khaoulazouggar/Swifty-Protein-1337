@@ -6,6 +6,7 @@ import OrbitControlsView from "./OrbitControlView";
 import { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import useOrientation from "../hooks/useOrientation";
+import useColors from "../hooks/useColors";
 
 const Protein = () => {
   const orientation = useOrientation();
@@ -35,32 +36,39 @@ const Protein = () => {
     let aspect = height - width > 0 ? height / width : width / height;
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
-    console.log(height, width);
+    // console.log(height, width);
   }, [height]);
   const camera = new THREE.PerspectiveCamera(90, aspect, 0.01, 2000);
   // Raycast
   const raycaster = new THREE.Raycaster();
   //sphere
   const geometry = new THREE.SphereGeometry(0.05);
-  const material = new THREE.MeshPhysicalMaterial({
-    color: 0xffaaaf,
-    emissive: 0x000000,
-    metalness: 0,
-    roughness: 0.5,
-    reflectivity: 1,
-    clearcoat: 0.5,
-    clearcoatRoughness: 0.2,
-  });
+  // const material = new THREE.MeshPhysicalMaterial({
+  // color: 0xffaaaf,
+  // emissive: 0x000000,
+  // metalness: 0,
+  // roughness: 0.5,
+  // reflectivity: 1,
+  // clearcoat: 0.5,
+  // clearcoatRoughness: 0.2,
+  // });
   for (let i = 0; i < atoms.length; i++) {
+    let color = useColors(atoms[i].name).rasmol;
+    const material = new THREE.MeshPhysicalMaterial({
+      color: parseInt(`0x${color}`, 16),
+      emissive: 0x000000,
+      metalness: 0,
+      roughness: 0.5,
+      reflectivity: 1,
+      clearcoat: 0.5,
+      clearcoatRoughness: 0.2,
+    });
     const sphere = new THREE.Mesh(geometry, material);
-    sphere.material.color.setHex(0x00ffff);
     sphere.position.set(
       atoms[i].position.x,
       atoms[i].position.y,
       atoms[i].position.z
     );
-    // sphere.setColor(0xff00ff);
-    // sphere.material.color = 0xff0000;
     scene.add(sphere);
   }
   //cylinder
@@ -126,16 +134,7 @@ const Protein = () => {
         style={{ width: width, height: height }}
         onContextCreate={async (gl) => {
           /*||||||||||||||Camera||||||||||||||*/
-          //   camera.aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
-          //   const camera = new THREE.PerspectiveCamera(
-          // 90,
-          // gl.drawingBufferWidth / gl.drawingBufferHeight,
-          // 0.01,
-          // 2000
-          //   );
-          camera.position.set(0, 0, 1);
-          //   setCamera(camera);
-          //   camera.updateProjectionMatrix();
+          camera.position.set(0, 0, 4);
 
           /*||||||||||||||Render||||||||||||||*/
           const renderer = new Renderer({ gl });

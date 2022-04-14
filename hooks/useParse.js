@@ -2,7 +2,7 @@ const useParse = (data, setAtoms, setConnections, setRangedPoints) => {
   const result = data.split(/\r?\n/);
   let atoms = [];
   let connections = [];
-  // console.log(data);
+  console.log(data);
   const mapInterval = (val, A, B) => {
     const a = -1;
     const b = 1;
