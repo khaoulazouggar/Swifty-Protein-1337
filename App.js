@@ -12,11 +12,11 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Group>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="Home"
             component={Home}
             options={{ headerShown: false }}
-          />
+          /> */}
           <Stack.Screen
             name="Ligands"
             component={List}

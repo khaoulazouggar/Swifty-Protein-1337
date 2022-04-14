@@ -4,8 +4,8 @@ const useParse = (data, setAtoms, setConnections, setRangedPoints) => {
   let connections = [];
   // console.log(data);
   const mapInterval = (val, A, B) => {
-    const a = -100;
-    const b = 100;
+    const a = -1;
+    const b = 1;
     // if (B - A === 0) console.log("asdfhaksjdfhlaskdfhlaks");
     //     // To map
     // [A, B] --> [a, b]
