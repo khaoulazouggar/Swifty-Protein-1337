@@ -11,6 +11,7 @@
     "buildios": "expo build:ios -t simulator"
   },
   "dependencies": {
+    "@react-native-community/netinfo": "^8.2.0",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
     "axios": "^0.26.1",

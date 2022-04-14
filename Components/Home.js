@@ -9,24 +9,38 @@ import {
 import { Appearance, useColorScheme } from "react-native-appearance";
 import * as LocalAuthentication from "expo-local-authentication";
 import { useNavigation } from "@react-navigation/native";
+import NetInfo from "@react-native-community/netinfo";
 
 export default function Home() {
   const [isSupported, setisSupported] = useState(false);
+  const [isConnected, setisConnected] = useState(true);
   const navigation = useNavigation();
 
   // Dark or Light mode
   // Appearance.getColorScheme();
   const colorScheme = useColorScheme();
 
-  //Check if TouchID or FaceID is supported by the app
   useEffect(async () => {
+    //Check Internet connection
+    NetInfo.fetch().then((state) => {
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
+      if (!state.isConnected) {
+        setisConnected(false);
+        alert(
+          "No Internet Connection, Please verify Internet Connection",
+          "OK"
+        );
+      }
+    });
+
+    //Check if TouchID or FaceID is supported by the app
     const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
     if (!savedBiometrics)
       return alert(
-        "Biometric record not found",
-        "Please verify your identity with your password",
-        "OK",
-        () => fallBackToDefaultAuth()
+        "Biometric record not found, Please verify your identity with your password",
+        "OK"
+        // () => fallBackToDefaultAuth()
       );
     const compatible = LocalAuthentication.hasHardwareAsync();
     if (compatible) {
@@ -36,15 +50,18 @@ export default function Home() {
 
   //handle login with biometricAuth
   const handleBiometricAuth = async () => {
-    const biometricAuth = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Login with your TouchId/FaceId",
-      disableDeviceFallback: true,
-      cancelLabel: "Cancel",
-    });
-    if (!biometricAuth.success)
-      alert("Your login Failed, Please try again", "OK");
-    // navigation.navigate("Ligands");
-    else navigation.navigate("Ligands");
+    if (isConnected) {
+      const biometricAuth = await LocalAuthentication.authenticateAsync({
+        promptMessage: "Login with your TouchId/FaceId",
+        disableDeviceFallback: true,
+        cancelLabel: "Cancel",
+      });
+      if (!biometricAuth.success)
+        alert("Your login Failed, Please try again", "OK");
+      // navigation.navigate("Ligands");
+      else navigation.navigate("Ligands");
+    } else
+      alert("No Internet Connection, Please verify Internet Connection", "OK");
   };
 
   return (
