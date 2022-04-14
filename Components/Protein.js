@@ -56,12 +56,12 @@ const Protein = () => {
     let color = useColors(atoms[i].name).rasmol;
     const material = new THREE.MeshPhysicalMaterial({
       color: parseInt(`0x${color}`, 16),
-      emissive: 0x000000,
-      metalness: 0,
-      roughness: 0.5,
-      reflectivity: 1,
-      clearcoat: 0.5,
-      clearcoatRoughness: 0.2,
+      emissive: parseInt(`0x${color}`, 16),
+      metalness: 1,
+      roughness: 0,
+      reflectivity: 0,
+      clearcoat: 1,
+      clearcoatRoughness: 0,
     });
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.set(
@@ -69,6 +69,7 @@ const Protein = () => {
       atoms[i].position.y,
       atoms[i].position.z
     );
+    sphere.name = atoms[i].name;
     scene.add(sphere);
   }
   //cylinder
@@ -86,7 +87,7 @@ const Protein = () => {
       );
       let dist = start.distanceTo(end);
       const materialCyl = new THREE.MeshBasicMaterial({
-        color: 0xfffff0,
+        color: 0x3c3939,
       });
       const cylinderGeometry = new THREE.CylinderGeometry(0.01, 0.01, dist, 64);
       let axis = new THREE.Vector3(
@@ -116,11 +117,7 @@ const Protein = () => {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children);
 
-    console.log(intersects.length);
-    for (let i = 0; i < intersects.length; i++) {
-      // intersects[ i ].object.material.color.set( 0xff0000 );
-      //   console.log(intersects[i]);
-    }
+    console.log(intersects[0]?.object?.name);
   };
 
   return (
