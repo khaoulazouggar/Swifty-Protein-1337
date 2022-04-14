@@ -20,7 +20,7 @@
       "bundleIdentifier": "com.kzouggar.Swifty-Protein",
       "userInterfaceStyle": "automatic",
       "infoPlist": {
-        "NSFaceIDUsageDescription": "Swifty-proteins needs to use Face ID / Touch ID to authenticate you"
+        "NSFaceIDUsageDescription": "Swifty-Protein needs to use Face ID / Touch ID to authenticate you"
       }
     },
     "android": {
