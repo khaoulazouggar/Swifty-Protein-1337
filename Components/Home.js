@@ -5,16 +5,19 @@ import {
   Text,
   Pressable,
   View,
+  Modal,
 } from "react-native";
 import { Appearance, useColorScheme } from "react-native-appearance";
 import * as LocalAuthentication from "expo-local-authentication";
 import { useNavigation } from "@react-navigation/native";
 import NetInfo from "@react-native-community/netinfo";
+import CustomAlert from "./CustomAlert";
 
 export default function Home() {
   const [isSupported, setisSupported] = useState(false);
   const [isConnected, setisConnected] = useState(true);
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Dark or Light mode
   // Appearance.getColorScheme();
@@ -56,10 +59,11 @@ export default function Home() {
         disableDeviceFallback: true,
         cancelLabel: "Cancel",
       });
-      if (!biometricAuth.success)
-        alert("Your login Failed, Please try again", "OK");
-      // navigation.navigate("Ligands");
-      else navigation.navigate("Ligands");
+      if (!biometricAuth.success) {
+        setModalVisible(true);
+        // alert("Your login Failed, Please try again", "OK");
+        // navigation.navigate("Ligands");
+      } else navigation.navigate("Ligands");
     } else
       alert("No Internet Connection, Please verify Internet Connection", "OK");
   };
@@ -69,6 +73,13 @@ export default function Home() {
       source={require("../assets/biology.png")}
       style={colorScheme == "light" ? styles.bgImage : dark_styles.bgImage}
     >
+      <CustomAlert
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        TextAlert="Your login Failed, Please try again"
+        Mode={colorScheme}
+      />
+
       {isSupported ? (
         <Pressable style={styles.button} onPress={handleBiometricAuth}>
           <Text style={styles.text}>LOGIN</Text>
@@ -81,12 +92,6 @@ export default function Home() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
   bgImage: {
     flex: 1,
     alignItems: "center",
@@ -109,15 +114,11 @@ const styles = StyleSheet.create({
 });
 
 const dark_styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "black",
-  },
-
   bgImage: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "black",
+    position: "relative",
   },
 });

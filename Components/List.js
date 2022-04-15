@@ -27,7 +27,7 @@ export default function List() {
   const [atoms, setAtoms] = useState([]);
   const [connections, setConnections] = useState([]);
   const [rangedPoints, setRangedPoints] = useState([]);
-  Appearance.getColorScheme();
+  // Appearance.getColorScheme();
 
   useEffect(() => {
     const Info = useColors("H");
