@@ -1,12 +1,13 @@
 import { GLView } from "expo-gl";
 import * as THREE from "three";
 import { Renderer } from "expo-three";
-import { Dimensions } from "react-native";
+import { Dimensions, View, StyleSheet } from "react-native";
 import OrbitControlsView from "./OrbitControlView";
 import { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import useOrientation from "../hooks/useOrientation";
 import useColors from "../hooks/useColors";
+import SwitchSelector from "react-native-switch-selector";
 
 const Protein = () => {
   const orientation = useOrientation();
@@ -120,41 +121,92 @@ const Protein = () => {
     console.log(intersects[0]?.object?.name);
   };
 
-  return (
-    <OrbitControlsView
-      camera={camera}
-      onTouchEndCapture={handleStateChange}
-      style={{ width: width, height: height }}
-    >
-      <GLView
-        key={height}
-        style={{ width: width, height: height }}
-        onContextCreate={async (gl) => {
-          /*||||||||||||||Camera||||||||||||||*/
-          camera.position.set(0, 0, 4);
+  const options1 = [
+    { label: "M1", value: "1" },
+    { label: "M2", value: "2" },
+  ];
 
-          /*||||||||||||||Render||||||||||||||*/
-          const renderer = new Renderer({ gl });
-          renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
-          renderer.setClearColor(0x000000, 1);
-          /*||||||||||||||Light||||||||||||||*/
-          const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-          directionalLight.position.set(0, 0, 100);
-          scene.add(directionalLight);
-          /*||||||||||||||Render Function||||||||||||||*/
-          const animate = () => {
-            timeout = requestAnimationFrame(animate);
-            directionalLight.position.copy(camera.position);
-            camera.updateProjectionMatrix();
-            renderer.render(scene, camera);
-            gl.endFrameEXP();
-          };
-          /*||||||||||||||Render||||||||||||||*/
-          animate();
-        }}
-      />
-    </OrbitControlsView>
+  const options2 = [
+    { label: "M3", value: "3" },
+    { label: "M4", value: "4" },
+  ];
+
+  return (
+    <View>
+      <View style={styles.selector}>
+        <SwitchSelector
+          options={options1}
+          initial={0}
+          onPress={(value) => console.log(`Call onPress with value: ${value}`)}
+          style={[styles.switch, { marginLeft: 15 }]}
+          buttonColor="#9CB9D8"
+          borderColor="#9CB9D8"
+          borderRadius={18}
+          hasPadding={true}
+        />
+
+        <SwitchSelector
+          options={options2}
+          initial={0}
+          onPress={(value) => console.log(`Call onPress with value: ${value}`)}
+          style={[styles.switch, { marginRight: 15 }]}
+          buttonColor="#9CB9D8"
+          borderColor="#9CB9D8"
+          borderRadius={18}
+          hasPadding={true}
+        />
+      </View>
+      <OrbitControlsView
+        camera={camera}
+        onTouchEndCapture={handleStateChange}
+        style={{ width: width, height: height }}
+      >
+        <GLView
+          key={height}
+          style={{ width: width, height: height }}
+          onContextCreate={async (gl) => {
+            /*||||||||||||||Camera||||||||||||||*/
+            camera.position.set(0, 0, 4);
+
+            /*||||||||||||||Render||||||||||||||*/
+            const renderer = new Renderer({ gl });
+            renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight);
+            renderer.setClearColor(0x000000, 1);
+            /*||||||||||||||Light||||||||||||||*/
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(0, 0, 100);
+            scene.add(directionalLight);
+            /*||||||||||||||Render Function||||||||||||||*/
+            const animate = () => {
+              timeout = requestAnimationFrame(animate);
+              directionalLight.position.copy(camera.position);
+              camera.updateProjectionMatrix();
+              renderer.render(scene, camera);
+              gl.endFrameEXP();
+            };
+            /*||||||||||||||Render||||||||||||||*/
+            animate();
+          }}
+        />
+      </OrbitControlsView>
+    </View>
   );
 };
 
 export default Protein;
+
+const styles = StyleSheet.create({
+  selector: {
+    alignItems: "center",
+    justifyContent: "space-between",
+    // backgroundColor: "black",
+    flexDirection: "row",
+    // position: "absolute",
+  },
+  switch: {
+    width: 100,
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+});
