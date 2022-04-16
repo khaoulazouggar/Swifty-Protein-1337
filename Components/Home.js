@@ -17,7 +17,9 @@ export default function Home() {
   const [isSupported, setisSupported] = useState(false);
   const [isConnected, setisConnected] = useState(true);
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalLogin, setModalLogin] = useState(false);
+  const [modalConnection, setModalConnection] = useState(false);
+  const [modalBiometric, setModalBiometric] = useState(false);
 
   // Dark or Light mode
   // Appearance.getColorScheme();
@@ -30,21 +32,21 @@ export default function Home() {
       console.log("Is connected?", state.isConnected);
       if (!state.isConnected) {
         setisConnected(false);
-        alert(
-          "No Internet Connection, Please verify Internet Connection",
-          "OK"
-        );
+        setModalConnection(true);
+        // alert(
+        //   "No Internet Connection, Please verify Internet Connection",
+        //   "OK"
+        // );
       }
     });
 
     //Check if TouchID or FaceID is supported by the app
     const savedBiometrics = await LocalAuthentication.isEnrolledAsync();
-    if (!savedBiometrics)
-      return alert(
-        "Biometric record not found, Please verify your identity with your password",
-        "OK"
-        // () => fallBackToDefaultAuth()
-      );
+    if (!savedBiometrics) return setModalBiometric(true);
+    // alert(
+    //   "Biometric record not found, Please verify your identity with your password",
+    //   "OK"
+    // );
     const compatible = LocalAuthentication.hasHardwareAsync();
     if (compatible) {
       setisSupported(compatible);
@@ -60,12 +62,14 @@ export default function Home() {
         cancelLabel: "Cancel",
       });
       if (!biometricAuth.success) {
-        setModalVisible(true);
+        setModalLogin(true);
         // alert("Your login Failed, Please try again", "OK");
         // navigation.navigate("Ligands");
       } else navigation.navigate("Ligands");
-    } else
-      alert("No Internet Connection, Please verify Internet Connection", "OK");
+    } else {
+      setModalConnection(true);
+      // alert("No Internet Connection, Please verify Internet Connection", "OK");
+    }
   };
 
   return (
@@ -74,9 +78,23 @@ export default function Home() {
       style={colorScheme == "light" ? styles.bgImage : dark_styles.bgImage}
     >
       <CustomAlert
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
+        modalVisible={modalLogin}
+        setModalVisible={setModalLogin}
         TextAlert="Your login Failed, Please try again"
+        Mode={colorScheme}
+      />
+
+      <CustomAlert
+        modalVisible={modalConnection}
+        setModalVisible={setModalConnection}
+        TextAlert="No Internet Connection, Please verify Internet Connection"
+        Mode={colorScheme}
+      />
+
+      <CustomAlert
+        modalVisible={modalBiometric}
+        setModalVisible={setModalBiometric}
+        TextAlert="Biometric record not found, Please verify your identity with your password"
         Mode={colorScheme}
       />
 

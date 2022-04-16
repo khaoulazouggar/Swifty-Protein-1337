@@ -19,7 +19,13 @@ const CustomAlert = (props) => {
               props.Mode === "light" ? styles.modalView : styles.modalViewD
             }
           >
-            <Text style={styles.modalText}>{props.TextAlert}</Text>
+            <Text
+              style={
+                props.Mode === "light" ? styles.modalText : styles.modalTextD
+              }
+            >
+              {props.TextAlert}
+            </Text>
             <Pressable
               style={styles.button}
               onPress={() => props.setModalVisible(!props.modalVisible)}
@@ -68,6 +74,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    color: "black",
+  },
+  modalTextD: {
     marginBottom: 15,
     textAlign: "center",
     color: "white",

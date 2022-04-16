@@ -15,24 +15,21 @@ import { useNavigation } from "@react-navigation/native";
 import Axios from "axios";
 import { Appearance, useColorScheme } from "react-native-appearance";
 import useParse from "../hooks/useParse";
-import useColors from "../hooks/useColors";
+import CustomAlert from "./CustomAlert";
 
 export default function List() {
   const [searchQuery, setSearchQuery] = useState("");
   const [listData, setdata] = useState(data);
   const [load, setLoad] = useState(false);
-  const appState = useRef(AppState.currentState);
-  const navigation = useNavigation();
-  const colorScheme = useColorScheme();
   const [atoms, setAtoms] = useState([]);
   const [connections, setConnections] = useState([]);
   const [rangedPoints, setRangedPoints] = useState([]);
-  // Appearance.getColorScheme();
+  const [modalLoad, setModalLoad] = useState(false);
 
-  useEffect(() => {
-    const Info = useColors("H");
-    console.log("--------------", Info);
-  }, []);
+  const appState = useRef(AppState.currentState);
+  const navigation = useNavigation();
+  const colorScheme = useColorScheme();
+  // Appearance.getColorScheme();
 
   // Home Screen always be displayed when relaunching the app
   useEffect(() => {
@@ -64,8 +61,9 @@ export default function List() {
         useParse(res.data, setAtoms, setConnections, setRangedPoints);
         setLoad(false);
       })
-      .catch((er) =>
-        alert("Failed to load the ligand, Please try again", "OK")
+      .catch(
+        (er) => setModalLoad(true)
+        // alert("Failed to load the ligand, Please try again", "OK")
       );
   };
 
@@ -96,6 +94,12 @@ export default function List() {
     <SafeAreaView
       style={colorScheme === "light" ? styles.container : dark_styles.container}
     >
+      <CustomAlert
+        modalVisible={modalLoad}
+        setModalVisible={setModalLoad}
+        TextAlert="Your login Failed, Please try again"
+        Mode={colorScheme}
+      />
       <Searchbar
         placeholder="Search"
         value={searchQuery}
