@@ -1,13 +1,23 @@
 import { GLView } from "expo-gl";
 import * as THREE from "three";
 import { Renderer } from "expo-three";
-import { Dimensions, View, StyleSheet } from "react-native";
+import {
+  Dimensions,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  Text,
+} from "react-native";
 import OrbitControlsView from "./OrbitControlView";
 import { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import useOrientation from "../hooks/useOrientation";
 import useColors from "../hooks/useColors";
 import SwitchSelector from "react-native-switch-selector";
+import { captureScreen } from "react-native-view-shot";
+import * as Sharing from "expo-sharing";
+import * as MediaLibrary from "expo-media-library";
 
 const Protein = () => {
   const orientation = useOrientation();
@@ -131,6 +141,25 @@ const Protein = () => {
     { label: "M4", value: "4" },
   ];
 
+  const snapshot = async () => {
+    try {
+      let result = await MediaLibrary.requestPermissionsAsync(true);
+      console.log(result);
+      if (result.granted == true) {
+        let uri = await captureScreen({
+          format: "jpg",
+          quality: 0.8,
+        });
+        // await Sharing.shareAsync(uri, {
+        //   dialogTitle: "Share this image",
+        // });
+        let r = await MediaLibrary.saveToLibraryAsync(uri);
+        console.log(r);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <View>
       <View style={styles.selector}>
@@ -156,6 +185,9 @@ const Protein = () => {
           hasPadding={true}
         />
       </View>
+      {/* <Pressable onPress={snapshot} style={{ width: 100, height: 100 }}>
+        <Text>asdfads</Text>
+      </Pressable> */}
       <OrbitControlsView
         camera={camera}
         onTouchEndCapture={handleStateChange}
