@@ -1,8 +1,7 @@
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
 import SwitchSelector from "react-native-switch-selector";
 import TabBar from "./tabBar";
-import ProteinView from "./ProteinView";
-import { Appearance, useColorScheme } from "react-native-appearance";
+import { useColorScheme } from "react-native-appearance";
 
 const Protein = () => {
   const colorScheme = useColorScheme();
@@ -44,10 +43,6 @@ const Protein = () => {
           hasPadding={true}
         />
       </View>
-      {/* <ProteinView /> */}
-      {/* <View>
-        <Text>hh</Text>
-      </View> */}
       <TabBar />
     </View>
   );

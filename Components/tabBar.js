@@ -10,8 +10,31 @@ import {
 import { CurvedBottomBar } from "react-native-curved-bottom-bar";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import ProteinView from "./ProteinView";
+import { captureScreen } from "react-native-view-shot";
+import * as Sharing from "expo-sharing";
+import * as MediaLibrary from "expo-media-library";
 
 const TabBar = () => {
+  const snapshot = async () => {
+    try {
+      let result = await MediaLibrary.requestPermissionsAsync(true);
+      console.log(result);
+      if (result.granted == true) {
+        let uri = await captureScreen({
+          format: "jpg",
+          quality: 0.8,
+        });
+        // await Sharing.shareAsync(uri, {
+        //   dialogTitle: "Share this image",
+        // });
+        let r = await MediaLibrary.saveToLibraryAsync(uri);
+        console.log(r);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const _renderIcon = (routeName) => {
     let info = "";
 
@@ -67,7 +90,6 @@ const TabBar = () => {
         bgColor="#9CB9D8"
         initialRouteName="title1"
         borderTopLeftRight
-        swipeEnabled
         renderCircle={(navigate) => (
           <Animated.View style={styles.btnCircle}>
             <TouchableOpacity
@@ -75,7 +97,7 @@ const TabBar = () => {
                 flex: 1,
                 justifyContent: "center",
               }}
-              onPress={() => Alert.alert("Click Action")}
+              onPress={snapshot}
             >
               <Ionicons name="share" color="white" size={25} />
             </TouchableOpacity>
