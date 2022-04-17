@@ -28,6 +28,8 @@
     "react-native": "0.64.3",
     "react-native-appearance": "^0.3.4",
     "react-native-biometrics": "^2.1.4",
+    "react-native-bottom-bar": "^0.3.3",
+    "react-native-curved-bottom-bar": "^1.7.4",
     "react-native-dynamic-search-bar": "^2.0.2",
     "react-native-LoopAnimation": "^0.1.0",
     "react-native-paper": "^4.11.2",
