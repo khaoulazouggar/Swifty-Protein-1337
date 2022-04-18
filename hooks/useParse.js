@@ -1,16 +1,10 @@
-const useParse = (data, setAtoms, setConnections, setRangedPoints) => {
+const useParse = (data, setAtoms, setConnections) => {
   const result = data.split(/\r?\n/);
   let atoms = [];
   let connections = [];
-  console.log(data);
   const mapInterval = (val, A, B) => {
     const a = -1;
     const b = 1;
-    // if (B - A === 0) console.log("asdfhaksjdfhlaskdfhlaks");
-    //     // To map
-    // [A, B] --> [a, b]
-    // use this formula
-    // (val - A)*(b-a)/(B-A) + a;
     return ((val - A) * (b - a)) / (B - A) + a;
   };
   let [, , , , , , maxX, maxY, maxZ] = result[0].split(/\s+/);
@@ -63,10 +57,8 @@ const useParse = (data, setAtoms, setConnections, setRangedPoints) => {
     mapedAtom.position.z = mapInterval(mapedAtom.position.z, minZ, maxZ);
     return mapedAtom;
   });
-  setRangedPoints([minX, maxX, minY, maxY, minZ, maxZ]);
   setConnections(connections);
   setAtoms(t);
-  // console.log(t);
 };
 
 export default useParse;

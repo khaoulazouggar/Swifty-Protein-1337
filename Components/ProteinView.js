@@ -9,7 +9,7 @@ import { Dimensions } from "react-native";
 import useOrientation from "../hooks/useOrientation";
 import { Appearance, useColorScheme } from "react-native-appearance";
 
-const ProteinView = () => {
+const ProteinView = ({ mode, coloringMode, setName, setPhase }) => {
   const orientation = useOrientation();
   const colorScheme = useColorScheme();
   const [aspect, setAspect] = useState();
@@ -19,6 +19,8 @@ const ProteinView = () => {
   let timeout;
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
+  let name;
+  let phase;
   /****************Hooks******************/
   useEffect(() => {
     return () => clearTimeout(timeout);
@@ -26,8 +28,12 @@ const ProteinView = () => {
   const [width, setWidth] = useState();
   const [height, setHeight] = useState();
   useEffect(() => {
-    setWidth(Dimensions.get("window").width);
-    setHeight(Dimensions.get("window").height);
+    let hDim = Dimensions.get("window").height;
+    let wDim = Dimensions.get("window").width;
+    let p = wDim > hDim ? 0.25 : 0.2;
+    setWidth(wDim);
+    // setHeight(hDim - hDim * p);
+    setHeight(hDim);
   }, [orientation]);
   /****************Three******************/
   // scene
@@ -37,7 +43,6 @@ const ProteinView = () => {
     let aspect = height - width > 0 ? height / width : width / height;
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
-    // console.log(height, width);
   }, [height]);
   const camera = new THREE.PerspectiveCamera(90, aspect, 0.01, 2000);
   // Raycast
@@ -53,25 +58,29 @@ const ProteinView = () => {
   // clearcoat: 0.5,
   // clearcoatRoughness: 0.2,
   // });
-  for (let i = 0; i < atoms.length; i++) {
-    let color = useColors(atoms[i].name).rasmol;
-    const material = new THREE.MeshPhysicalMaterial({
-      color: parseInt(`0x${color}`, 16),
-      emissive: parseInt(`0x${color}`, 16),
-      metalness: 1,
-      roughness: 0,
-      reflectivity: 0,
-      clearcoat: 1,
-      clearcoatRoughness: 0,
-    });
-    const sphere = new THREE.Mesh(geometry, material);
-    sphere.position.set(
-      atoms[i].position.x,
-      atoms[i].position.y,
-      atoms[i].position.z
-    );
-    sphere.name = atoms[i].name;
-    scene.add(sphere);
+  if (mode === "1") {
+    for (let i = 0; i < atoms.length; i++) {
+      let color;
+      if (coloringMode == "3") color = useColors(atoms[i].name).jmol;
+      else color = useColors(atoms[i].name).rasmol;
+      const material = new THREE.MeshPhysicalMaterial({
+        color: parseInt(`0x${color}`, 16),
+        emissive: parseInt(`0x${color}`, 16),
+        metalness: 1,
+        roughness: 0,
+        reflectivity: 0,
+        clearcoat: 1,
+        clearcoatRoughness: 0,
+      });
+      const sphere = new THREE.Mesh(geometry, material);
+      sphere.position.set(
+        atoms[i].position.x,
+        atoms[i].position.y,
+        atoms[i].position.z
+      );
+      sphere.name = atoms[i].name;
+      scene.add(sphere);
+    }
   }
   //cylinder
   for (let i = 0; i < connections.length; i++) {
@@ -87,8 +96,9 @@ const ProteinView = () => {
         atoms[connections[i].connects[j] - 1].position.z
       );
       let dist = start.distanceTo(end);
+      let cylColor = mode === "1" ? 0x3c3939 : 0xffffff;
       const materialCyl = new THREE.MeshBasicMaterial({
-        color: 0x3c3939,
+        color: cylColor,
       });
       const cylinderGeometry = new THREE.CylinderGeometry(0.01, 0.01, dist, 64);
       let axis = new THREE.Vector3(
@@ -117,14 +127,18 @@ const ProteinView = () => {
     mouse.y = -(locationY / windowHeight) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children);
-
-    console.log(intersects[0]?.object?.name);
+    if (intersects[0]?.object?.name) {
+      alert(intersects[0]?.object?.name);
+      // setName(intersects[0].object.name);
+      console.log(intersects[0]?.object?.name);
+    }
+    // console.log(intersects[0]?.object?.name);
   };
   return (
     <OrbitControlsView
       camera={camera}
       onTouchEndCapture={handleStateChange}
-      style={{ width: width, height: height }}
+      style={{ width: width, height: height, marginTop: -100 }}
     >
       <GLView
         key={height}

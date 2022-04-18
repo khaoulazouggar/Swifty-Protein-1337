@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Alert,
   Animated,
@@ -14,7 +14,9 @@ import { captureScreen } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import * as MediaLibrary from "expo-media-library";
 
-const TabBar = () => {
+const TabBar = ({ mode, coloringMode }) => {
+  const [phase, setPhase] = useState("");
+  const [name, setName] = useState("");
   const snapshot = async () => {
     try {
       let result = await MediaLibrary.requestPermissionsAsync(true);
@@ -40,9 +42,9 @@ const TabBar = () => {
 
     switch (routeName) {
       case "title1":
-        info = "P_name";
+        info = name;
         break;
-      case "title2":
+      case phase:
         info = "P_phase";
         break;
     }
@@ -108,11 +110,20 @@ const TabBar = () => {
         <CurvedBottomBar.Screen
           name="title1"
           position="left"
-          component={() => <ProteinView />}
+          component={() => (
+            <ProteinView
+              setName={setName}
+              phase={setPhase}
+              mode={mode}
+              coloringMode={coloringMode}
+            />
+          )}
         />
         <CurvedBottomBar.Screen
           name="title2"
-          component={() => <ProteinView />}
+          component={() => (
+            <ProteinView mode={mode} coloringMode={coloringMode} />
+          )}
           position="right"
         />
       </CurvedBottomBar.Navigator>
