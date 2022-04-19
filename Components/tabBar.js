@@ -17,6 +17,7 @@ import * as MediaLibrary from "expo-media-library";
 const TabBar = ({ mode, coloringMode }) => {
   const [phase, setPhase] = useState("");
   const [name, setName] = useState("");
+
   const snapshot = async () => {
     try {
       let result = await MediaLibrary.requestPermissionsAsync(true);
@@ -37,7 +38,7 @@ const TabBar = ({ mode, coloringMode }) => {
     }
   };
 
-  const _renderIcon = (routeName) => {
+  const _renderInfo = (routeName) => {
     let info = "";
 
     switch (routeName) {
@@ -66,10 +67,10 @@ const TabBar = ({ mode, coloringMode }) => {
 
     return <Text style={styles.text}>{text}</Text>;
   };
-  const renderTabBar = ({ routeName, navigate }) => {
+
+  const renderTabBar = ({ routeName }) => {
     return (
-      <TouchableOpacity
-        // onPress={() => navigate(routeName)}
+      <View
         style={{
           flex: 1,
           alignItems: "center",
@@ -77,8 +78,8 @@ const TabBar = ({ mode, coloringMode }) => {
         }}
       >
         {_renderText(routeName)}
-        {_renderIcon(routeName)}
-      </TouchableOpacity>
+        {_renderInfo(routeName)}
+      </View>
     );
   };
 
@@ -92,7 +93,7 @@ const TabBar = ({ mode, coloringMode }) => {
         bgColor="#9CB9D8"
         initialRouteName="title1"
         borderTopLeftRight
-        renderCircle={(navigate) => (
+        renderCircle={() => (
           <Animated.View style={styles.btnCircle}>
             <TouchableOpacity
               style={{
@@ -131,6 +132,7 @@ const TabBar = ({ mode, coloringMode }) => {
   );
 };
 export default TabBar;
+
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
