@@ -114,6 +114,7 @@ const TabBar = ({ mode, coloringMode }) => {
           component={() => (
             <ProteinView
               setName={setName}
+              name={name}
               phase={setPhase}
               mode={mode}
               coloringMode={coloringMode}
@@ -122,9 +123,7 @@ const TabBar = ({ mode, coloringMode }) => {
         />
         <CurvedBottomBar.Screen
           name="title2"
-          component={() => (
-            <ProteinView mode={mode} coloringMode={coloringMode} />
-          )}
+          component={() => <View></View>}
           position="right"
         />
       </CurvedBottomBar.Navigator>

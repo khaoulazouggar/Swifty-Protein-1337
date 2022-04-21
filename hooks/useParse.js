@@ -2,9 +2,11 @@ const useParse = (data, setAtoms, setConnections) => {
   const result = data.split(/\r?\n/);
   let atoms = [];
   let connections = [];
-  const mapInterval = (val, A, B) => {
+  const mapInterval = (val, A, B, t) => {
     const a = -1;
     const b = 1;
+    if (t) return ((val - A) * (b - a)) / (B - A) + a + 1;
+
     return ((val - A) * (b - a)) / (B - A) + a;
   };
   let [, , , , , , maxX, maxY, maxZ] = result[0].split(/\s+/);
@@ -31,7 +33,6 @@ const useParse = (data, setAtoms, setConnections) => {
     } else if (tmp[0] === "CONECT" && tmp.length > 1) {
       let pikala = parseInt(tmp[1], 10);
       if (pikala <= atoms.length) {
-        // connections.push([]);
         let con = { index: pikala, connects: [] };
         for (let j = 2; j < tmp.length; j++) {
           let x = parseInt(tmp[j]);
@@ -53,7 +54,7 @@ const useParse = (data, setAtoms, setConnections) => {
       },
     };
     mapedAtom.position.x = mapInterval(mapedAtom.position.x, minX, maxX);
-    mapedAtom.position.y = mapInterval(mapedAtom.position.y, minY, maxY);
+    mapedAtom.position.y = mapInterval(mapedAtom.position.y, minY, maxY, true);
     mapedAtom.position.z = mapInterval(mapedAtom.position.z, minZ, maxZ);
     return mapedAtom;
   });
