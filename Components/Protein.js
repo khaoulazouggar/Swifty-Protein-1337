@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import SwitchSelector from "react-native-switch-selector";
 import { useColorScheme } from "react-native-appearance";
 import OrbitControlsView from "./OrbitControlView";
@@ -8,8 +8,12 @@ import useColors from "../hooks/useColors";
 import { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import * as THREE from "three";
-import { Dimensions, ActivityIndicator } from "react-native";
+import { Dimensions, ActivityIndicator, Share } from "react-native";
 import useOrientation from "../hooks/useOrientation";
+import { captureScreen } from "react-native-view-shot";
+import * as MediaLibrary from "expo-media-library";
+import * as Sharing from "expo-sharing";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Protein = () => {
   const [mode, setMode] = useState("2");
@@ -53,10 +57,6 @@ const Protein = () => {
     // setHeight(hDim - hDim * p);
     setHeight(hDim);
   }, [orientation]);
-  /****************Three******************/
-  // scene
-  const scene = new THREE.Scene();
-  //camera
   useEffect(() => {
     setLoad(true);
     let aspect = height - width > 0 ? height / width : width / height;
@@ -64,6 +64,10 @@ const Protein = () => {
     camera.updateProjectionMatrix();
     setLoad(false);
   }, [height]);
+  /****************Three******************/
+  // scene
+  const scene = new THREE.Scene();
+  //camera
 
   const camera = new THREE.PerspectiveCamera(90, 0.5, 0.01, 2000);
   // Raycast
@@ -142,6 +146,41 @@ const Protein = () => {
     if (intersects[0]?.object?.name) {
       alert(intersects[0]?.object?.name);
       console.log(intersects[0]?.object?.name);
+    }
+  };
+  /****************Snapshot******************/
+  const snapshot = async () => {
+    try {
+      let uri = await captureScreen({
+        format: "jpg",
+        quality: 0.8,
+      });
+      await Sharing.shareAsync(uri, {
+        dialogTitle: "Share this image",
+      });
+      let result = await MediaLibrary.requestPermissionsAsync(true);
+      if (result.status === "granted") {
+        let r = await MediaLibrary.saveToLibraryAsync(uri);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const onShare = async () => {
+    try {
+      let uri = await captureScreen({
+        format: "jpg",
+        quality: 0.8,
+      });
+      await Share.share({ url: uri });
+      let result = await MediaLibrary.requestPermissionsAsync(true);
+      if (result.status === "granted") {
+        let r = await MediaLibrary.saveToLibraryAsync(uri);
+        console.log(r);
+      }
+    } catch (error) {
+      alert(error.message);
     }
   };
 
@@ -224,6 +263,9 @@ const Protein = () => {
       ) : (
         <ActivityIndicator size="large" color="#00ff00" />
       )}
+      <Pressable onPress={onShare} style={styles.shareButton}>
+        <Ionicons style={styles.icon} name="share" color="white" size={25} />
+      </Pressable>
     </View>
   );
 };
@@ -231,6 +273,14 @@ const Protein = () => {
 export default Protein;
 
 const styles = StyleSheet.create({
+  shareButton: {
+    width: "10%",
+    height: "5%",
+    // backgroundColor: "#ff0000",
+    position: "absolute",
+    bottom: "5%",
+    right: "5%",
+  },
   selector: {
     alignItems: "center",
     justifyContent: "space-between",
@@ -250,5 +300,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 10,
     marginBottom: 10,
+  },
+  icon: {
+    width: "100%",
+    height: "100%",
   },
 });
