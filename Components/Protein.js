@@ -12,7 +12,6 @@ import { Dimensions, ActivityIndicator, Share } from "react-native";
 import useOrientation from "../hooks/useOrientation";
 import { captureScreen } from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
-import * as Sharing from "expo-sharing";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Protein = () => {
@@ -43,9 +42,9 @@ const Protein = () => {
     return () => clearTimeout(timeout);
   }, []);
   useEffect(() => {
-    setLoad(true);
+    // setLoad(true);
     setKey(key + 1);
-    setLoad(false);
+    // setLoad(false);
   }, [mode, coloringMode]);
   const [width, setWidth] = useState();
   const [height, setHeight] = useState();
@@ -58,11 +57,11 @@ const Protein = () => {
     setHeight(hDim);
   }, [orientation]);
   useEffect(() => {
-    setLoad(true);
+    // setLoad(true);
     let aspect = height - width > 0 ? height / width : width / height;
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
-    setLoad(false);
+    // setLoad(false);
   }, [height]);
   /****************Three******************/
   // scene

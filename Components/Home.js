@@ -42,9 +42,9 @@ export default function Home() {
       cancelLabel: "Cancel",
     });
     if (!biometricAuth.success) {
-      // setModalLogin(true);
+      setModalLogin(true);
       // alert("Your login Failed, Please try again", "OK");
-      navigation.navigate("Ligands");
+      // navigation.navigate("Ligands");
     } else navigation.navigate("Ligands");
   };
 
