@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from "react-native";
+import { Modal, StyleSheet, Text, Pressable, View } from "react-native";
 
 const CustomAlert = (props) => {
   return (
@@ -8,10 +7,6 @@ const CustomAlert = (props) => {
         animationType="slide"
         transparent={true}
         visible={props.modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          props.setModalVisible(!props.modalVisible);
-        }}
       >
         <View style={styles.centeredView}>
           <View
@@ -63,16 +58,6 @@ const styles = StyleSheet.create({
     padding: 35,
     opacity: 0.9,
   },
-  button: {
-    borderRadius: 5,
-    padding: 10,
-    backgroundColor: "#9CB9D8",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
   modalText: {
     marginBottom: 15,
     textAlign: "center",
@@ -82,6 +67,16 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
     color: "white",
+  },
+  button: {
+    borderRadius: 5,
+    padding: 10,
+    backgroundColor: "#9CB9D8",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 

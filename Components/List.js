@@ -13,9 +13,10 @@ import { Searchbar } from "react-native-paper";
 import data from "./ligands.json";
 import { useNavigation } from "@react-navigation/native";
 import Axios from "axios";
-import { Appearance, useColorScheme } from "react-native-appearance";
+import { useColorScheme } from "react-native-appearance";
 import useParse from "../hooks/useParse";
 import CustomAlert from "./CustomAlert";
+import * as Network from "expo-network";
 
 export default function List() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,11 +26,11 @@ export default function List() {
   const [connections, setConnections] = useState([]);
   const [rangedPoints, setRangedPoints] = useState([]);
   const [modalLoad, setModalLoad] = useState(false);
+  const [modalConnection, setModalConnection] = useState(false);
 
   const appState = useRef(AppState.currentState);
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
-  // Appearance.getColorScheme();
 
   // Home Screen always be displayed when relaunching the app
   useEffect(() => {
@@ -54,17 +55,24 @@ export default function List() {
   }, [atoms]);
 
   //get Ligand
-  const getLigand = (item) => {
+  const getLigand = async (item) => {
     setLoad(true);
-    Axios(`https://files.rcsb.org/ligands/view/${item}_model.pdb`)
-      .then((res) => {
-        useParse(res.data, setAtoms, setConnections, setRangedPoints);
-        setLoad(false);
-      })
-      .catch(
-        (er) => setModalLoad(true)
-        // alert("Failed to load the ligand, Please try again", "OK")
-      );
+    const cnx = await Network.getNetworkStateAsync();
+
+    if (cnx.isConnected) {
+      Axios(`https://files.rcsb.org/ligands/view/${item}_model.pdb`)
+        .then((res) => {
+          useParse(res.data, setAtoms, setConnections, setRangedPoints);
+          setLoad(false);
+        })
+        .catch(
+          (er) => setModalLoad(true)
+          // alert("Failed to load the ligand, Please try again", "OK")
+        );
+    } else {
+      setModalConnection(true);
+      setLoad(false);
+    }
   };
 
   // setSearchQuery
@@ -94,6 +102,12 @@ export default function List() {
     <SafeAreaView
       style={colorScheme === "light" ? styles.container : dark_styles.container}
     >
+      <CustomAlert
+        modalVisible={modalConnection}
+        setModalVisible={setModalConnection}
+        TextAlert="No Internet Connection, Please verify Internet Connection"
+        Mode={colorScheme}
+      />
       <CustomAlert
         modalVisible={modalLoad}
         setModalVisible={setModalLoad}

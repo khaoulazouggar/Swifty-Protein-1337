@@ -112,7 +112,8 @@ const Protein = () => {
         atoms[connections[i].connects[j] - 1].position.z
       );
       let dist = start.distanceTo(end);
-      let cylColor = mode === "1" ? 0x3c3939 : 0xffffff;
+      let cylColor =
+        mode == 1 ? 0x3c3939 : colorScheme === "light" ? 0x000000 : 0xffffff;
       const materialCyl = new THREE.MeshBasicMaterial({
         color: cylColor,
       });
@@ -146,24 +147,6 @@ const Protein = () => {
     if (intersects[0]?.object?.name) {
       alert(intersects[0]?.object?.name);
       console.log(intersects[0]?.object?.name);
-    }
-  };
-  /****************Snapshot******************/
-  const snapshot = async () => {
-    try {
-      let uri = await captureScreen({
-        format: "jpg",
-        quality: 0.8,
-      });
-      await Sharing.shareAsync(uri, {
-        dialogTitle: "Share this image",
-      });
-      let result = await MediaLibrary.requestPermissionsAsync(true);
-      if (result.status === "granted") {
-        let r = await MediaLibrary.saveToLibraryAsync(uri);
-      }
-    } catch (e) {
-      console.log(e);
     }
   };
 
@@ -263,6 +246,7 @@ const Protein = () => {
       ) : (
         <ActivityIndicator size="large" color="#00ff00" />
       )}
+
       <Pressable onPress={onShare} style={styles.shareButton}>
         <Ionicons style={styles.icon} name="share" color="white" size={25} />
       </Pressable>
@@ -274,12 +258,16 @@ export default Protein;
 
 const styles = StyleSheet.create({
   shareButton: {
-    width: "10%",
-    height: "5%",
-    // backgroundColor: "#ff0000",
+    width: 45,
+    height: 45,
+    backgroundColor: "#9CB9D8",
     position: "absolute",
     bottom: "5%",
     right: "5%",
+    borderRadius: 50,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   selector: {
     alignItems: "center",
@@ -301,8 +289,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  icon: {
-    width: "100%",
-    height: "100%",
-  },
+  // icon: {
+  //   width: "100%",
+  //   height: "100%",
+  // },
 });
