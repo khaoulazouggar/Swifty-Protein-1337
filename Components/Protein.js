@@ -274,14 +274,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "white",
     flexDirection: "row",
-    // position: "absolute",
   },
   selectorD: {
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "black",
     flexDirection: "row",
-    // position: "absolute",
   },
   switch: {
     width: 100,
@@ -289,8 +287,4 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  // icon: {
-  //   width: "100%",
-  //   height: "100%",
-  // },
 });
